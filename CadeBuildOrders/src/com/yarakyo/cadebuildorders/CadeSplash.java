@@ -21,7 +21,7 @@ import android.view.Menu;
 
 import com.yarakyo.cadebuildorders.DefaultBuilds;
 
-public class CadeSplash extends Activity{
+public class CadeSplash extends Activity {
 
 	private void SplashScreen() {
 		Thread timer = new Thread() {
@@ -39,15 +39,12 @@ public class CadeSplash extends Activity{
 		timer.start();
 	}
 
-
-
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cade_splash);
 		SplashScreen();
-		
+
 	}
 
 	@Override

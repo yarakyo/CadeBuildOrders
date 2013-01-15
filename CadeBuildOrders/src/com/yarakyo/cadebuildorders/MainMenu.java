@@ -17,11 +17,13 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainMenu extends Activity {
+	//View Variables
 	Button Exit;
 	Button Terran;
 	Button Protoss;
 	Button Zerg;
-
+	Button RestoreBuilds;
+	
 	NotificationManager nm;
 	final int uniqueID = 133787;
 
@@ -41,10 +43,18 @@ public class MainMenu extends Activity {
 		notificationBuilder.setContentIntent(pendingIntent);
 		nm.notify(uniqueID, notificationBuilder.build());
 	}
-
-	private void setUpListenersAndVariables() {
-		// Exit Button
+	
+	private void setUpViewVariables() {
 		Exit = (Button) findViewById(R.id.buttonExit);
+		Terran = (Button) findViewById(R.id.buttonTerran);
+		Protoss = (Button) findViewById(R.id.buttonProtoss);
+		Zerg = (Button) findViewById(R.id.buttonZerg);
+		RestoreBuilds = (Button) findViewById(R.id.RestoreBuilds);
+	}
+
+	private void setUpListeners() {
+		
+		// Exit Button		
 		Exit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -57,8 +67,6 @@ public class MainMenu extends Activity {
 		});
 
 		// Race Buttons
-
-		Terran = (Button) findViewById(R.id.buttonTerran);
 		Terran.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -69,7 +77,7 @@ public class MainMenu extends Activity {
 			}
 		});
 
-		Protoss = (Button) findViewById(R.id.buttonProtoss);
+		// Protoss button
 		Protoss.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -80,7 +88,7 @@ public class MainMenu extends Activity {
 			}
 		});
 
-		Zerg = (Button) findViewById(R.id.buttonZerg);
+		//Zerg Button
 		Zerg.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -92,7 +100,6 @@ public class MainMenu extends Activity {
 		});
 		
 		//Restore all builds
-		Button RestoreBuilds = (Button) findViewById(R.id.RestoreBuilds);
 		RestoreBuilds.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -143,10 +150,13 @@ public class MainMenu extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_main_menu);
-		setUpListenersAndVariables();
+		setUpViewVariables();
+		setUpListeners();
 		setUpNotification();
 	}
 	
+
+
 	@Override
 	public void onStart()
 	{
