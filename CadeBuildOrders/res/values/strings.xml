@@ -1,0 +1,22 @@
+<resources>
+
+    <string name="app_name">Cade Build Orders</string>
+    <string name="Cade_Software">Cade Software</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_cade">Cade Build Orders</string>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <string name="title_activity_cade_splash">Cade Build Orders</string>
+    <string name="title_activity_main_menu">MainMenu</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_race_menu">RaceMenu</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_add_build">AddBuild</string>
+    <string name="title_activity_build">Build</string>
+    <string name="title_activity_build_add">BuildAdd</string>
+    <string name="title_activity_build_edit">BuildEdit</string>
+    <string name="title_activity_run_build">RunBuild</string>
+
+</resources>
