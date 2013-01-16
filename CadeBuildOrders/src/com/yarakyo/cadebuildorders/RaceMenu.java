@@ -46,15 +46,19 @@ public class RaceMenu extends Activity {
 
 	// Build Variables
 	List<ActionList> allBuilds;
+	List<ActionList> selectedBuilds;
 	String race;
 
 	// Setters
-	public List<ActionList> getAllBuildsList() {
-		return this.allBuilds;
-	}
+
 
 	public void setAllBuildsList(List<ActionList> allBuilds) {
 		this.allBuilds = allBuilds;
+	}
+	
+	public void setSelectedBuildsList(List<ActionList> selectedBuilds)
+	{
+		this.selectedBuilds = selectedBuilds;
 	}
 
 	public void setRadioGroup(RadioGroup radioGroupBuild) {
@@ -68,6 +72,15 @@ public class RaceMenu extends Activity {
 
 	public String getRace() {
 		return this.race;
+	}
+	
+	public List<ActionList> getAllBuildsList() {
+		return this.allBuilds;
+	}
+	
+	public List<ActionList> getSelectedBuildsList()
+	{
+		return this.selectedBuilds;
 	}
 
 	private String convertRaceToRaceString(Race race) {
@@ -93,7 +106,8 @@ public class RaceMenu extends Activity {
 					selectedBuilds.add(checkTheRace);
 				}
 			}
-			setAllBuildsList(selectedBuilds);
+			setSelectedBuildsList(selectedBuilds);
+			setAllBuildsList(tempAllBuilds);
 			in.close();
 		} catch (Exception e) {
 
@@ -103,12 +117,16 @@ public class RaceMenu extends Activity {
 
 	private void saveBuildsToFile() {
 		try {
-			FileOutputStream fos = openFileOutput("saveFile",
-					this.MODE_WORLD_WRITEABLE);
-			ObjectOutputStream out = new ObjectOutputStream(fos);
-			out.writeObject(allBuilds);
-			out.close();
-
+			File file = new File( getFilesDir() +"/saveFile");
+			file.delete();
+			if(!file.exists())
+			{
+				FileOutputStream fos = openFileOutput("saveFile",
+						this.MODE_WORLD_WRITEABLE);
+				ObjectOutputStream out = new ObjectOutputStream(fos);
+				out.writeObject(allBuilds);
+				out.close();
+			}
 		} catch (Exception e) {
 
 		}
@@ -163,8 +181,8 @@ public class RaceMenu extends Activity {
 
 	private Intent selectBuildForEdit(int editBuildID) {
 		// Pack it
-		List<ActionList> tempAllBuilds = getAllBuildsList();
-		ActionList passedBuild = tempAllBuilds.get(editBuildID);
+		List<ActionList> tempSelectedBuilds = getSelectedBuildsList();
+		ActionList passedBuild = tempSelectedBuilds.get(editBuildID);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("BuildOrder", passedBuild);
 
@@ -177,8 +195,8 @@ public class RaceMenu extends Activity {
 	}
 
 	private Intent selectBuildForRun(int runBuildID) {
-		List<ActionList> tempAllBuilds = getAllBuildsList();
-		ActionList passedBuild = tempAllBuilds.get(runBuildID);
+		List<ActionList> tempSelectedBuilds = getSelectedBuildsList();
+		ActionList passedBuild = tempSelectedBuilds.get(runBuildID);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("RunBuild", passedBuild);
 
@@ -220,6 +238,7 @@ public class RaceMenu extends Activity {
 
 		// Initialise All Builds List
 		this.allBuilds = new ArrayList<ActionList>();
+		this.selectedBuilds = new ArrayList<ActionList>();
 
 		// Set Build Race
 		Intent buildIntent = getIntent();
@@ -371,11 +390,11 @@ public class RaceMenu extends Activity {
 
 	private void refreshRadioGroup() {
 		radioGroupBuild.removeAllViews();
-		Iterator<ActionList> allBuildsIterator = allBuilds.iterator();
+		Iterator<ActionList> selectedBuildsIterator = selectedBuilds.iterator();
 		int radioIndex = 0;
-		while (allBuildsIterator.hasNext()) {
+		while (selectedBuildsIterator.hasNext()) {
 			RadioButton radioButton = new RadioButton(this);
-			ActionList temp = allBuildsIterator.next();
+			ActionList temp = selectedBuildsIterator.next();
 
 			radioButton.setId(radioIndex);
 			radioButton.setText(temp.getBuildName());

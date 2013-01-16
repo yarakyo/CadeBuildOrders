@@ -23,9 +23,18 @@ public class DefaultBuilds {
 					actions[i]), minutes[i], seconds[i]);
 			tempActionList.add(tempAction);
 		}
-
 		tempBuild.setActionList(tempActionList);
-
+		
+		
+		List<Action> allActionList = new ArrayList<Action>();
+		ActionList allActionBuild = new ActionList("ALL ACTIONS", Race.Terran);
+		for(Action action:allActions)
+		{
+			allActionList.add(action);
+		}
+		allActionBuild.setActionList(allActionList);
+	
+		defaultBuilds.add(allActionBuild);
 		defaultBuilds.add(tempBuild);
 	}
 

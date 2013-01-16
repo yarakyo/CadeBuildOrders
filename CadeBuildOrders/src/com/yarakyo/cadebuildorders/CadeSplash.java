@@ -44,6 +44,7 @@ public class CadeSplash extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cade_splash);
 		SplashScreen();
+		
 
 	}
 

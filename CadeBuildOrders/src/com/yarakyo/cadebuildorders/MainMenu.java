@@ -1,5 +1,6 @@
 package com.yarakyo.cadebuildorders;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
@@ -17,13 +18,13 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainMenu extends Activity {
-	//View Variables
+	// View Variables
 	Button Exit;
 	Button Terran;
 	Button Protoss;
 	Button Zerg;
 	Button RestoreBuilds;
-	
+
 	NotificationManager nm;
 	final int uniqueID = 133787;
 
@@ -43,7 +44,7 @@ public class MainMenu extends Activity {
 		notificationBuilder.setContentIntent(pendingIntent);
 		nm.notify(uniqueID, notificationBuilder.build());
 	}
-	
+
 	private void setUpViewVariables() {
 		Exit = (Button) findViewById(R.id.buttonExit);
 		Terran = (Button) findViewById(R.id.buttonTerran);
@@ -53,8 +54,8 @@ public class MainMenu extends Activity {
 	}
 
 	private void setUpListeners() {
-		
-		// Exit Button		
+
+		// Exit Button
 		Exit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -88,7 +89,7 @@ public class MainMenu extends Activity {
 			}
 		});
 
-		//Zerg Button
+		// Zerg Button
 		Zerg.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -98,10 +99,10 @@ public class MainMenu extends Activity {
 				startActivity(RaceIntent);
 			}
 		});
-		
-		//Restore all builds
+
+		// Restore all builds
 		RestoreBuilds.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				final AlertDialog.Builder alertConfirmDelete = new AlertDialog.Builder(
@@ -117,17 +118,26 @@ public class MainMenu extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								List<Action> allActions = Action.PopulateActions();
-								//Write to saveFile
+								List<Action> allActions = Action
+										.PopulateActions();
+								// Write to saveFile
 								try {
-									FileOutputStream fos = openFileOutput("saveFile", MainMenu.this.MODE_WORLD_WRITEABLE);
-									ObjectOutputStream out = new ObjectOutputStream(fos);
-									out.writeObject(DefaultBuilds.populateDefaultBuilds(allActions));
-									out.close();
-
+									File file = new File(getFilesDir()
+											+ "/saveFile");
+									file.delete();
+									if (!file.exists()) {
+										FileOutputStream fos = openFileOutput(
+												"saveFile",
+												MainMenu.this.MODE_WORLD_WRITEABLE);
+										ObjectOutputStream out = new ObjectOutputStream(
+												fos);
+										out.writeObject(DefaultBuilds
+												.populateDefaultBuilds(allActions));
+										out.close();
+									}
 								} catch (Exception e) {
 
-								}	
+								}
 							}
 						});
 				alertConfirmDelete.setNegativeButton("No",
@@ -141,25 +151,21 @@ public class MainMenu extends Activity {
 				alertConfirmDelete.show();
 			}
 		});
-		
 
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_main_menu);
 		setUpViewVariables();
 		setUpListeners();
 		setUpNotification();
 	}
-	
-
 
 	@Override
-	public void onStart()
-	{
+	public void onStart() {
 		super.onStart();
 		checkForResume();
 	}
@@ -179,7 +185,7 @@ public class MainMenu extends Activity {
 	}
 
 	@Override
-	public void onDestroy(){
+	public void onDestroy() {
 		super.onDestroy();
 		nm.cancel(uniqueID);
 	}

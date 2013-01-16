@@ -329,7 +329,7 @@ public class Build extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_build);
-		checkForFirstRun();
+		//checkForFirstRun();
 		setUpListenersAndVariables();
 
 		// Set build name and race name

@@ -9,11 +9,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -41,6 +45,7 @@ public class RunBuild extends Activity {
 	String runBuildName;
 	List<Action> runActionList;
 	List<RunElement> runElementList;
+	Context Context;
 
 	// Handlers
 	Handler runTimerHandler;
@@ -111,6 +116,7 @@ public class RunBuild extends Activity {
 		};
 
 		runElementHandler = new Handler() {
+			// running Handler
 			public void handleMessage(Message msg) {
 				List<RunElement> tempRunElementList = getRunElementList();
 				Iterator<RunElement> tempRELIterator = tempRunElementList
@@ -120,11 +126,9 @@ public class RunBuild extends Activity {
 					tempRunElement.setProgressBarTime(getCurrentRunTime());
 					tempRunElement.testTimeExpired(getCurrentRunTime());
 					if (tempRunElement.testForRemovalTime(getCurrentRunTime()) == true) {
-						LinearLayout tempLinearLayout = getRunElementLinearLayout();
-						tempLinearLayout.removeView(tempRunElement
-								.getActionDescriptionAndTime());
-						tempLinearLayout.removeView(tempRunElement
-								.getProgressbar());
+						// Clear all children from Views
+						SVRunLLayout.removeView(tempRunElement
+								.getElementcontainerLayout());
 					}
 				}
 			}
@@ -137,11 +141,9 @@ public class RunBuild extends Activity {
 		this.currentRunTime = 0;
 	}
 
-	private void resetRunElements()
-	{
+	private void resetRunElements() {
 		List<RunElement> tempRunElementList = getRunElementList();
-		for(RunElement runElement: tempRunElementList)
-		{
+		for (RunElement runElement : tempRunElementList) {
 			runElement.resetProgressBar();
 		}
 	}
@@ -169,6 +171,7 @@ public class RunBuild extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				SVRunLLayout.removeAllViews();
 				setPauseState(true);
 			}
 		});
@@ -186,6 +189,7 @@ public class RunBuild extends Activity {
 				runTimerHandler.sendEmptyMessage(0);
 				runElementHandler.sendEmptyMessage(0);
 				resetRunElements();
+				resetDisplayRunElements();
 				displayRunElements();
 			}
 		});
@@ -201,13 +205,68 @@ public class RunBuild extends Activity {
 		});
 	}
 
+	private LinearLayout packRunElementIntoContainer(RunElement tempRunElement) {
+		// Container
+		LinearLayout ElementContainerLayout = new LinearLayout(this.Context);
+		ElementContainerLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+		// Left Layouts
+		LinearLayout ElementLeftLayout = new LinearLayout(Context);
+		ElementLeftLayout.setOrientation(LinearLayout.VERTICAL);
+		ImageView runElementImage = new ImageView(Context);
+		String imagePointer = "icon_"; 
+		imagePointer += String.valueOf(tempRunElement.getAction().actionID);
+		int id = getResources().getIdentifier( imagePointer, "drawable", getPackageName());
+		runElementImage.setImageResource(id);
+		
+		ElementLeftLayout.addView(runElementImage);
+
+		//Right Layout
+		LinearLayout ElementRightLayout = new LinearLayout(Context);
+		ElementRightLayout.setOrientation(LinearLayout.VERTICAL);
+		ElementRightLayout.setLayoutParams(new LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+
+		ElementRightLayout
+				.addView(tempRunElement.getTextViewRunActionDescription());
+		ElementRightLayout.addView(tempRunElement.getTextViewRunActionTime());
+		ElementRightLayout.addView(tempRunElement.getProgressbar());
+
+		ElementContainerLayout.addView(ElementLeftLayout);
+		ElementContainerLayout.addView(ElementRightLayout);
+
+		//Add references to runElement object
+		tempRunElement.setContainerLayout(ElementContainerLayout,
+				ElementLeftLayout, ElementRightLayout);
+		tempRunElement.setImageView(runElementImage);
+		return ElementContainerLayout;
+	}
+
+	private void resetDisplayRunElements() {
+		SVRunLLayout.removeAllViews();
+		Iterator<RunElement> runElementListIterator = runElementList.iterator();
+		while (runElementListIterator.hasNext()) {
+			RunElement tempRunElement = runElementListIterator.next();
+			LinearLayout tempLeftLayout = tempRunElement.getElementLeftLayout();
+			tempLeftLayout.removeAllViews();
+
+			LinearLayout tempRightLayout = tempRunElement
+					.getElementRightLayout();
+			tempRightLayout.removeAllViews();
+
+			LinearLayout tempElementContainerLayout = tempRunElement
+					.getElementcontainerLayout();
+			tempElementContainerLayout.removeAllViews();
+		}
+	}
+
 	private void displayRunElements() {
 		SVRunLLayout.removeAllViews();
 		Iterator<RunElement> runElementListIterator = runElementList.iterator();
 		while (runElementListIterator.hasNext()) {
 			RunElement tempRunElement = runElementListIterator.next();
-			SVRunLLayout.addView(tempRunElement.getActionDescriptionAndTime());
-			SVRunLLayout.addView(tempRunElement.getProgressbar());
+			LinearLayout ElementContainerLayout = packRunElementIntoContainer(tempRunElement);
+			SVRunLLayout.addView(ElementContainerLayout);
 		}
 
 	}
@@ -221,6 +280,7 @@ public class RunBuild extends Activity {
 		// Set up Local Variables
 		this.runElementList = new ArrayList<RunElement>();
 		this.runActionList = new ArrayList<Action>();
+		this.Context = this;
 		runActionList = passedBuild.getActionList();
 
 		Iterator<Action> runActionListIterator = this.runActionList.iterator();

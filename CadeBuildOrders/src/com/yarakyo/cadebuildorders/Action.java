@@ -108,7 +108,7 @@ public class Action implements Serializable {
 
 	public static List<Action> PopulateActions() {
 		List<Action> ActionArray = new ArrayList<Action>();
-		int arrayCounter = 0;
+		int arrayCounter = 1;
 
 		// Terran Section
 		// Buildings
@@ -124,7 +124,7 @@ public class Action implements Serializable {
 		}
 
 		// Units
-		String[] terranUnits = { "SCV", "Mule", "Marine", "Marauder", "Reaper",
+		String[] terranUnits = { "SCV", "Marine", "Marauder", "Reaper",
 				"Ghost", "Hellion", "Siege Tank", "Thor", "Viking", "Medivac",
 				"Raven", "Banshee", "Battlecruiser", "Point Defense Drone",
 				"Auto-Turret" };
@@ -178,7 +178,7 @@ public class Action implements Serializable {
 				"Dark Templar", "High Templar", "Archon", "Observer",
 				"Warp Prism", "Immortal", "Colossus", "Phoenix", "Void Ray",
 				"Carrier", "Interceptor", "Mothership" };
-		for (int i = 0; i < protossBuildings.length; i++) {
+		for (int i = 0; i < protossUnits.length; i++) {
 			ActionArray.add(new Action(arrayCounter, Race.Protoss,
 					Category.Unit, protossUnits[i]));
 			arrayCounter++;
@@ -206,7 +206,7 @@ public class Action implements Serializable {
 		// Buildings
 		String[] zergBuildings = { "Hatchery", "Extractor", "Spawning Pool",
 				"Evolution Chamer", "Spine Crawler", "Spore Crawler",
-				"Roach Warren", "Baneling Nest", "Infestation Pit",
+				"Roach Warren", "Baneling Nest", "Lair","Infestation Pit",
 				"Hydralisk Den", "Spire", "Nydus Network", "Hive",
 				"Ultralisk Cavern", "Greater Spire" };
 		for (int i = 0; i < zergBuildings.length; i++) {
@@ -218,7 +218,7 @@ public class Action implements Serializable {
 		// Units
 		String[] zergUnits = { "Drone", "Zergling", "Baneling", "Roach",
 				"Hydralisk", "Mutalisk", "Corruptor", "Infestor", "Ultralisk",
-				"Brood Lord", "Broodling", "Overlord", "Overseer", "Queen",
+				"Brood Lord", "Overlord", "Overseer", "Queen",
 				"Changeling", "Infested Terran" };
 		for (int i = 0; i < zergUnits.length; i++) {
 			ActionArray.add(new Action(arrayCounter, Race.Zerg, Category.Unit,

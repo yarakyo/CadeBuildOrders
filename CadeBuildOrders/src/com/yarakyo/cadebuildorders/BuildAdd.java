@@ -107,10 +107,10 @@ public class BuildAdd extends Activity {
 
 		this.currentRace = selectedRace;
 
-		//Set the Race Spinner
+		// Set the Race Spinner
 		Spinner raceSpinner = (Spinner) findViewById(R.id.spinnerRace);
 		raceSpinner.setSelection(position);
-		
+
 		// Set the Category Spinner
 		Spinner categorySpinner = (Spinner) findViewById(R.id.spinnerCategory);
 		List<String> categoryList = new ArrayList<String>();
@@ -290,7 +290,7 @@ public class BuildAdd extends Activity {
 
 		// Button Listeners
 		setButtonListeners();
-		
+
 		// Set Race to match upper levels
 		setSelectedRace();
 	}
@@ -347,18 +347,21 @@ public class BuildAdd extends Activity {
 			@Override
 			public void afterTextChanged(Editable editTextArgument) {
 				// TODO Auto-generated method stub
-				int minutes = Integer.parseInt(editTextArgument.toString());
+				try {
+					int minutes = Integer.parseInt(editTextArgument.toString());
+					// Less than 60
+					if (minutes > 59) {
+						minutes = 59;
+					}
 
-				// Less than 60
-				if (minutes > 59) {
-					minutes = 59;
+					if (minutes < 0) {
+						minutes = 0;
+					}
+
+					BuildAdd.this.setMinutes(minutes);
+				} catch (Exception e) {
+
 				}
-
-				if (minutes < 0) {
-					minutes = 0;
-				}
-
-				BuildAdd.this.setMinutes(minutes);
 			}
 
 			@Override
@@ -383,8 +386,8 @@ public class BuildAdd extends Activity {
 			public void afterTextChanged(Editable editTextArgument) {
 				// TODO Auto-generated method stub
 
+				try {
 					int seconds = Integer.parseInt(editTextArgument.toString());
-
 					// Less than 60
 					if (seconds > 59) {
 						seconds = 59;
@@ -395,6 +398,10 @@ public class BuildAdd extends Activity {
 					}
 
 					BuildAdd.this.setSeconds(seconds);
+				} catch (Exception e) {
+
+				}
+
 			}
 
 			@Override
@@ -436,6 +443,5 @@ public class BuildAdd extends Activity {
 		getMenuInflater().inflate(R.menu.activity_build_add, menu);
 		return true;
 	}
-
 
 }
