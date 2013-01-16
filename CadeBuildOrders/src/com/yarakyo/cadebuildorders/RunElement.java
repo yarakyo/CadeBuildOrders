@@ -119,7 +119,7 @@ public class RunElement extends RunBuild {
 		textViewRunActionDescription.setText(action.getActionDescription());
 		textViewRunActionDescription.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
 		textViewRunActionTime = new TextView(context);
-		textViewRunActionTime.setText(action.getActionID()+ "m " + action.getSeconds() + "s.");
+		textViewRunActionTime.setText(action.getMinutes()+ "m " + action.getSeconds() + "s.");
 		textViewRunActionTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
 		
 		
