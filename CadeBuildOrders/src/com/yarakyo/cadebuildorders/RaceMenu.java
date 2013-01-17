@@ -118,7 +118,7 @@ public class RaceMenu extends Activity {
 
 	private void saveBuildsToFile() {
 		try {
-			File file = new File("saveFile");
+			File file = new File(getFilesDir() + "/saveFile");
 			file.delete();
 			if(!file.exists())
 			{
@@ -144,24 +144,21 @@ public class RaceMenu extends Activity {
 
 
 	private void deleteBuild() {
-		// Get build to delete
+		// Get build to delete from selected then find hash
 		RadioGroup temp = RaceMenu.this.getRadioGroup();
-		int deleteBuildID = temp.getCheckedRadioButtonId();
-
-		// Delete the build
-		List<ActionList> tempAllBuildsList = RaceMenu.this.getAllBuildsList();
-		Iterator<ActionList> tempAllBuildsListiterator = tempAllBuildsList
-				.iterator();
+		int radioButtonDeleteId = temp.getCheckedRadioButtonId();
+		ActionList toDelete = selectedBuilds.get(radioButtonDeleteId);
+		String hashToDelete = toDelete.getHash();
+		
+		// Delete the build from all builds by skipping over it when making new list
 		List<ActionList> newBOList = new ArrayList<ActionList>();
-		int counter = 0;
-		while (tempAllBuildsListiterator.hasNext()) {
-			ActionList tempActionList = tempAllBuildsListiterator.next();
-			if (counter == deleteBuildID) {
-				counter++;
+		for(ActionList tempActionList:allBuilds)
+		{
+			if(tempActionList.getHash().equals(hashToDelete))
+			{
 				continue;
 			}
 			newBOList.add(tempActionList);
-			counter++;
 		}
 
 		setAllBuildsList(newBOList);

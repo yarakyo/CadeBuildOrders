@@ -126,7 +126,7 @@ public class MainMenu extends Activity {
 										.PopulateActions();
 								// Write default builds to saveFile
 								try {
-									File file = new File("saveFile");
+									File file = new File(getFilesDir() +"/saveFile");
 									file.delete();
 									if (!file.exists()) {
 										FileOutputStream fos = openFileOutput(
