@@ -52,13 +52,11 @@ public class RaceMenu extends Activity {
 
 	// Setters
 
-
 	public void setAllBuildsList(List<ActionList> allBuilds) {
 		this.allBuilds = allBuilds;
 	}
-	
-	public void setSelectedBuildsList(List<ActionList> selectedBuilds)
-	{
+
+	public void setSelectedBuildsList(List<ActionList> selectedBuilds) {
 		this.selectedBuilds = selectedBuilds;
 	}
 
@@ -74,13 +72,12 @@ public class RaceMenu extends Activity {
 	public String getRace() {
 		return this.race;
 	}
-	
+
 	public List<ActionList> getAllBuildsList() {
 		return this.allBuilds;
 	}
-	
-	public List<ActionList> getSelectedBuildsList()
-	{
+
+	public List<ActionList> getSelectedBuildsList() {
 		return this.selectedBuilds;
 	}
 
@@ -118,10 +115,8 @@ public class RaceMenu extends Activity {
 
 	private void saveBuildsToFile() {
 		try {
-			File file = new File(getFilesDir() + "/saveFile");
-			file.delete();
-			if(!file.exists())
-			{
+			boolean fileDeleted = deleteFile("saveFile");
+			if (fileDeleted == true) {
 				FileOutputStream fos = openFileOutput("saveFile",
 						this.MODE_WORLD_WRITEABLE);
 				ObjectOutputStream out = new ObjectOutputStream(fos);
@@ -142,20 +137,18 @@ public class RaceMenu extends Activity {
 		textViewBuilds.setText(raceName + " Builds");
 	}
 
-
 	private void deleteBuild() {
 		// Get build to delete from selected then find hash
 		RadioGroup temp = RaceMenu.this.getRadioGroup();
 		int radioButtonDeleteId = temp.getCheckedRadioButtonId();
 		ActionList toDelete = selectedBuilds.get(radioButtonDeleteId);
 		String hashToDelete = toDelete.getHash();
-		
-		// Delete the build from all builds by skipping over it when making new list
+
+		// Delete the build from all builds by skipping over it when making new
+		// list
 		List<ActionList> newBOList = new ArrayList<ActionList>();
-		for(ActionList tempActionList:allBuilds)
-		{
-			if(tempActionList.getHash().equals(hashToDelete))
-			{
+		for (ActionList tempActionList : allBuilds) {
+			if (tempActionList.getHash().equals(hashToDelete)) {
 				continue;
 			}
 			newBOList.add(tempActionList);
@@ -357,10 +350,10 @@ public class RaceMenu extends Activity {
 				alertConfirmDelete.show();
 			}
 		});
-		//Back Button
+		// Back Button
 		buttonBack = (Button) findViewById(R.id.buttonBack);
 		buttonBack.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -474,8 +467,5 @@ public class RaceMenu extends Activity {
 		getMenuInflater().inflate(R.menu.activity_race_menu, menu);
 		return true;
 	}
-	
-
-	
 
 }

@@ -18,5 +18,7 @@
     <string name="title_activity_build_add">BuildAdd</string>
     <string name="title_activity_build_edit">BuildEdit</string>
     <string name="title_activity_run_build">RunBuild</string>
+    
+    <string name="save_file_director"></string>
 
 </resources>

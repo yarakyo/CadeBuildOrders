@@ -1,6 +1,8 @@
 package com.yarakyo.cadebuildorders;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
@@ -126,17 +128,9 @@ public class MainMenu extends Activity {
 										.PopulateActions();
 								// Write default builds to saveFile
 								try {
-									File file = new File(getFilesDir() +"/saveFile");
-									file.delete();
-									if (!file.exists()) {
-										FileOutputStream fos = openFileOutput(
-												"saveFile",
-												MainMenu.this.MODE_WORLD_WRITEABLE);
-										ObjectOutputStream out = new ObjectOutputStream(
-												fos);
-										out.writeObject(DefaultBuilds
-												.populateDefaultBuilds(allActions));
-										out.close();
+									boolean fileDeleted = deleteFile("saveFile");
+									if (fileDeleted == true) {
+										writeDefaultBuilds();
 									}
 								} catch (Exception e) {
 
@@ -155,6 +149,19 @@ public class MainMenu extends Activity {
 			}
 		});
 
+	}
+
+	private void writeDefaultBuilds() {
+		try {
+			List<Action> allActions = Action.PopulateActions();
+			FileOutputStream fos = openFileOutput("saveFile",
+					MainMenu.this.MODE_WORLD_WRITEABLE);
+			ObjectOutputStream out = new ObjectOutputStream(fos);
+			out.writeObject(DefaultBuilds.populateDefaultBuilds(allActions));
+			out.close();
+		} catch (Exception e) {
+
+		}
 	}
 
 	private void checkForResume() {
@@ -177,6 +184,20 @@ public class MainMenu extends Activity {
 		setUpViewVariables();
 		setUpListeners();
 		setUpNotification();
+		checkForFirstRun();
+	}
+
+	private void checkForFirstRun() {
+		try {
+			//Try to open file
+			FileInputStream fos = openFileInput("saveFile");
+		} catch (FileNotFoundException FileNotFounde) {
+			try {
+				writeDefaultBuilds();
+			} catch (Exception e) {
+
+			}
+		} 
 	}
 
 	@Override
@@ -188,6 +209,12 @@ public class MainMenu extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main_menu, menu);
 		return true;
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		nm.cancelAll();
 	}
 
 }
