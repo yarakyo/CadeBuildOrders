@@ -116,13 +116,15 @@
                     android:id="@+id/buttonBuildAddActionOK"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="OK" />
+                    android:text="OK" 
+                    android:background="@drawable/button_states"/>
 
                 <Button
                     android:id="@+id/buttonBuildAddActionCancel"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Cancel" />
+                    android:text="Cancel" 
+                    android:background="@drawable/button_states"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

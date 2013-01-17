@@ -76,6 +76,20 @@ public class Action implements Serializable {
 		}
 		return returnAction;
 	}
+	
+	public static List<Integer> applyFilterAndReturnIds(Race Race, Category Category,
+			List<Action> actionArray) {
+		List<Integer> filteredActions = new ArrayList<Integer>();
+		Iterator<Action> actionArrayIterator = actionArray.iterator();
+		while (actionArrayIterator.hasNext()) {
+			Action actionTemp = actionArrayIterator.next();
+			if (actionTemp.race.equals(Race)
+					&& actionTemp.category.equals(Category)) {
+				filteredActions.add(actionTemp.getActionID());
+			}
+		}
+		return filteredActions;
+	}
 
 	// Default Constructor
 	public Action() {

@@ -41,6 +41,7 @@ public class RaceMenu extends Activity {
 	Button buttonAddBuild;
 	Button buttonEditBuild;
 	Button buttonDeleteBuild;
+	Button buttonBack;
 	Button buttonRun;
 	String currentRace;
 
@@ -117,7 +118,7 @@ public class RaceMenu extends Activity {
 
 	private void saveBuildsToFile() {
 		try {
-			File file = new File( getFilesDir() +"/saveFile");
+			File file = new File("saveFile");
 			file.delete();
 			if(!file.exists())
 			{
@@ -141,11 +142,6 @@ public class RaceMenu extends Activity {
 		textViewBuilds.setText(raceName + " Builds");
 	}
 
-	private void checkBuildSelected() {
-		int checkedRadioID = radioGroupBuild.getCheckedRadioButtonId();
-		textViewBuilds = (TextView) findViewById(R.id.textViewBuilds);
-		textViewBuilds.setText(checkedRadioID + " is Ticked");
-	}
 
 	private void deleteBuild() {
 		// Get build to delete
@@ -177,6 +173,7 @@ public class RaceMenu extends Activity {
 
 		// Save to new list to file
 		saveBuildsToFile();
+		refreshRadioGroup();
 	}
 
 	private Intent selectBuildForEdit(int editBuildID) {
@@ -363,6 +360,16 @@ public class RaceMenu extends Activity {
 				alertConfirmDelete.show();
 			}
 		});
+		//Back Button
+		buttonBack = (Button) findViewById(R.id.buttonBack);
+		buttonBack.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 
 		// Run Button
 		buttonRun = (Button) findViewById(R.id.buttonRun);
@@ -390,6 +397,7 @@ public class RaceMenu extends Activity {
 
 	private void refreshRadioGroup() {
 		radioGroupBuild.removeAllViews();
+		populateBuildsForThisMatchUp();
 		Iterator<ActionList> selectedBuildsIterator = selectedBuilds.iterator();
 		int radioIndex = 0;
 		while (selectedBuildsIterator.hasNext()) {

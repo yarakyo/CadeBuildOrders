@@ -154,7 +154,6 @@ public class RunBuild extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				if (getRunState() == false) {
 					runThread.start();
 					setRunState(true);
@@ -170,8 +169,6 @@ public class RunBuild extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				SVRunLLayout.removeAllViews();
 				setPauseState(true);
 			}
 		});
@@ -181,8 +178,6 @@ public class RunBuild extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
 				// Reset conditions
 				setPauseState(true);
 				setCurrentTime(0);
@@ -199,7 +194,6 @@ public class RunBuild extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				RunBuild.this.finish();
 			}
 		});
@@ -268,7 +262,6 @@ public class RunBuild extends Activity {
 			LinearLayout ElementContainerLayout = packRunElementIntoContainer(tempRunElement);
 			SVRunLLayout.addView(ElementContainerLayout);
 		}
-
 	}
 
 	private void setUpRunElements() {

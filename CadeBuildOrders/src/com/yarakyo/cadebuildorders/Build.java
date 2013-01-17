@@ -18,12 +18,15 @@ import com.yarakyo.cadebuildorders.ActionList.Race;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -33,9 +36,9 @@ import android.widget.TextView;
 
 public class Build extends Activity {
 	ScrollView scrollViewActionsList;
-	LinearLayout scrollViewActionLinearLayout;
-	LinearLayout scrollViewActionLinearLayoutHoritzontalLeft;
-	LinearLayout scrollViewActionLinearLayoutHoritzontalRight;
+	LinearLayout SVActionLL;
+	LinearLayout SVActionLLLeft;
+	LinearLayout SVActionLLRight;
 	Button buttonAddAction;
 	Button buttonRemove;
 	Button buttonFinish;
@@ -43,6 +46,8 @@ public class Build extends Activity {
 	List<Action> actionArray;
 	List<Action> buildOrderActionList;
 	TextView textViewActionList;
+	ImageView actionImage;
+	BuildMenuHandler BMH;
 
 	String buildName;
 	Race race;
@@ -64,12 +69,11 @@ public class Build extends Activity {
 	public String getBuildName() {
 		return this.buildName;
 	}
-	
-	public Race getRace()
-	{
+
+	public Race getRace() {
 		return this.race;
 	}
-	
+
 	private String getRaceString() {
 		return this.raceString;
 	}
@@ -82,7 +86,7 @@ public class Build extends Activity {
 	public void setNewbuildOrderActionList(List<Action> passedBuild) {
 		this.buildOrderActionList = passedBuild;
 	}
-	
+
 	// Sorting method
 	public List<Integer> bubbleSortActionList(List<Integer> keys,
 			List<Integer> values) {
@@ -109,34 +113,14 @@ public class Build extends Activity {
 		return keys;
 
 	}
-	
-	private void checkForFirstRun()
-	{
-		File fis = new File("saveFile");
-		if(!fis.exists())
-		{
-			//Populate with default builds
-			List<Action> allActions = Action.PopulateActions();
-			List<ActionList> allBuilds = DefaultBuilds.populateDefaultBuilds(allActions);
-			
-			//Write to saveFile
-			try {
-				FileOutputStream fos = openFileOutput("saveFile", this.MODE_WORLD_WRITEABLE);
-				ObjectOutputStream out = new ObjectOutputStream(fos);
-				out.writeObject(allBuilds);
-				out.close();
 
-			} catch (Exception e) {
-
-			}			
-		}
-	}
-	
-	private void setRace(String race)
-	{
-		if(race.equals("Terran")) this.race = Race.Terran;
-		if(race.equals("Protoss")) this.race = Race.Protoss;
-		if(race.equals("Zerg")) this.race = Race.Zerg;	
+	private void setRace(String race) {
+		if (race.equals("Terran"))
+			this.race = Race.Terran;
+		if (race.equals("Protoss"))
+			this.race = Race.Protoss;
+		if (race.equals("Zerg"))
+			this.race = Race.Zerg;
 	}
 
 	private void SortBuildOrderByTime() {
@@ -184,8 +168,6 @@ public class Build extends Activity {
 
 		// Set up scrollView
 		scrollViewActionsList = (ScrollView) findViewById(R.id.scrollViewActionsList);
-		scrollViewActionLinearLayout = (LinearLayout) findViewById(R.id.scrollViewActionLinearLayout);
-		scrollViewActionLinearLayout.addView(radioActionList);
 
 		// Set up Buttons
 		buttonAddAction = (Button) findViewById(R.id.buttonAddAction);
@@ -207,8 +189,7 @@ public class Build extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				int checkedRadioID = Build.this.getRadioActionList()
-						.getCheckedRadioButtonId();
+				int checkedRadioID = BMH.getCheckedRadioButton();
 				deleteActionAndRefreshList(checkedRadioID);
 			}
 		});
@@ -218,11 +199,11 @@ public class Build extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				Bundle bundle = new Bundle();
 				Intent closeIntent = new Intent();
 				ActionList passableBuildOrder = new ActionList(Build.this
-						.getBuildOrderActionList(), Build.this.getBuildName(),Build.this.race);
+						.getBuildOrderActionList(), Build.this.getBuildName(),
+						Build.this.race);
 				bundle.putSerializable("BuildOrder", passableBuildOrder);
 				closeIntent.putExtras(bundle);
 				setResult(RESULT_OK, closeIntent);
@@ -232,21 +213,11 @@ public class Build extends Activity {
 
 	}
 
+
 	private void RedrawRadioList() {
-		radioActionList.removeAllViews();
-		Iterator<Action> buildOrderActionListIterator = buildOrderActionList
-				.iterator();
-		int buttonId = 0;
-		while (buildOrderActionListIterator.hasNext()) {
-			RadioButton radioActionButton = new RadioButton(this);
-			Action tempRadioAction = buildOrderActionListIterator.next();
-			radioActionButton.setId(buttonId);
-			radioActionButton.setText(tempRadioAction.getActionDescription()
-					+ " " + tempRadioAction.getMinutes() + " m "
-					+ tempRadioAction.getSeconds() + "s.");
-			radioActionList.addView(radioActionButton);
-			buttonId++;
-		}
+		scrollViewActionsList.removeAllViews();
+		BMH = new BuildMenuHandler(buildOrderActionList, this);
+		scrollViewActionsList.addView(BMH.getMenu());
 	}
 
 	private void deleteActionAndRefreshList(int deleteActionID) {
@@ -271,18 +242,6 @@ public class Build extends Activity {
 		RedrawRadioList();
 	}
 
-	private void populateActionListTest() {
-		scrollViewActionsList = (ScrollView) findViewById(R.id.scrollViewActionsList);
-		scrollViewActionLinearLayout = (LinearLayout) findViewById(R.id.scrollViewActionLinearLayout);
-		for (int i = 0; i < 20; i++) {
-			RadioButton radioActionButton = new RadioButton(this);
-			radioActionButton.setText("Actions here");
-			radioActionList.addView(radioActionButton);
-		}
-		scrollViewActionLinearLayout.addView(radioActionList);
-
-	}
-
 	private void populateWithExisitingBuild(ActionList passedBuild) {
 		List<Action> populateBuild = passedBuild.getActionList();
 		setNewbuildOrderActionList(populateBuild);
@@ -297,12 +256,6 @@ public class Build extends Activity {
 		int minutes = savedBundle.getInt("Minutes");
 		int seconds = savedBundle.getInt("Seconds");
 		Action newAction = new Action(temp, minutes, seconds);
-
-		/*
-		 * radioActionButton.setText(temp .getActionDescription() +
-		 * temp.getMinutes() + temp.getSeconds());
-		 * radioActionList.addView(radioActionButton);
-		 */
 
 		// Add to List
 		addBuildOrderActionToList(newAction);
@@ -329,7 +282,7 @@ public class Build extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_build);
-		//checkForFirstRun();
+
 		setUpListenersAndVariables();
 
 		// Set build name and race name

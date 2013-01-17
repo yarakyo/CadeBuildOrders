@@ -112,27 +112,10 @@ public class BuildAdd extends Activity {
 		raceSpinner.setSelection(position);
 
 		// Set the Category Spinner
-		Spinner categorySpinner = (Spinner) findViewById(R.id.spinnerCategory);
-		List<String> categoryList = new ArrayList<String>();
-		categoryList.add(Category.Building.toString());
-		categoryList.add(Category.Unit.toString());
-		categoryList.add(Category.Action.toString());
-		ArrayAdapter<String> categorySpinnerAdapter = new ArrayAdapter<String>(
-				this, android.R.layout.simple_spinner_item, categoryList);
-		categorySpinnerAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_item);
-		categorySpinner.setAdapter(categorySpinnerAdapter);
+		setUpCatagorySpinner();
 
 		// Set the Action Spinner
-		Spinner actionSpinner = (Spinner) findViewById(R.id.spinnerAction);
-		List<String> actionList = FilterActions(selectedRace,
-				Category.Building, actionArray);
-
-		ArrayAdapter<String> actionSpinnerAdapter = new ArrayAdapter<String>(
-				this, android.R.layout.simple_spinner_item, actionList);
-		actionSpinnerAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_item);
-		actionSpinner.setAdapter(actionSpinnerAdapter);
+		setUpActionSpinner(currentRace,Category.Building);
 
 	}
 
@@ -153,16 +136,7 @@ public class BuildAdd extends Activity {
 		this.currentCategory = selectedCategory;
 
 		// Set the Action Spinner
-		Spinner actionSpinner = (Spinner) findViewById(R.id.spinnerAction);
-		List<String> actionList = FilterActions(currentRace, selectedCategory,
-				actionArray);
-
-		ArrayAdapter<String> actionSpinnerAdapter = new ArrayAdapter<String>(
-				this, android.R.layout.simple_spinner_item, actionList);
-		actionSpinnerAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_item);
-		actionSpinner.setAdapter(actionSpinnerAdapter);
-
+		setUpActionSpinner(this.currentRace,this.currentCategory);
 	}
 
 	private void ActionSpinnerChange(Object item, int position) {
@@ -173,35 +147,16 @@ public class BuildAdd extends Activity {
 
 	private void SetupSpinnersAndDefaultSpinnerValues() {
 		// Set the Race Spinner
-		Spinner raceSpinner = (Spinner) findViewById(R.id.spinnerRace);
-		List<String> raceArrayList = new ArrayList<String>();
-		raceArrayList.add(Race.Terran.toString());
-		raceArrayList.add(Race.Protoss.toString());
-		raceArrayList.add(Race.Zerg.toString());
-		ArrayAdapter<String> raceSpinnerAdapter = new ArrayAdapter<String>(
-				this, android.R.layout.simple_spinner_item, raceArrayList);
-		raceSpinnerAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_item);
-		raceSpinner.setAdapter(raceSpinnerAdapter);
-		raceSpinner
-				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-					@Override
-					public void onItemSelected(AdapterView<?> parent,
-							View view, int position, long id) {
-						// TODO Auto-generated method stub
-						Object item = parent.getItemAtPosition(position);
-						RaceSpinnerChange(item, position);
-					}
-
-					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
-						// TODO Auto-generated method stub
-
-					}
-
-				});
-
+		setUpRaceSpinner();
+		
 		// Set the Category Spinner
+		setUpCatagorySpinner();
+		
+		// Set the Action Spinner
+		setUpActionSpinner(Race.Terran,Category.Building);
+	}
+
+	private void setUpCatagorySpinner() {
 		Spinner categorySpinner = (Spinner) findViewById(R.id.spinnerCategory);
 		List<String> categoryList = new ArrayList<String>();
 		categoryList.add(Category.Building.toString());
@@ -230,16 +185,46 @@ public class BuildAdd extends Activity {
 					}
 				});
 
-		// Set the Action Spinner
+	}
+
+	private void setUpRaceSpinner() {
+		Spinner raceSpinner = (Spinner) findViewById(R.id.spinnerRace);
+		List<String> raceArrayList = new ArrayList<String>();
+		raceArrayList.add(Race.Terran.toString());
+		raceArrayList.add(Race.Protoss.toString());
+		raceArrayList.add(Race.Zerg.toString());
+		ArrayAdapter<String> raceSpinnerAdapter = new ArrayAdapter<String>(
+				this, android.R.layout.simple_spinner_item, raceArrayList);
+		raceSpinnerAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_item);
+		raceSpinner.setAdapter(raceSpinnerAdapter);
+		raceSpinner
+				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+					@Override
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int position, long id) {
+						// TODO Auto-generated method stub
+						Object item = parent.getItemAtPosition(position);
+						RaceSpinnerChange(item, position);
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						// TODO Auto-generated method stub
+
+					}
+
+				});
+	}
+
+	private void setUpActionSpinner(Race race,Category category) {
 		Spinner actionSpinner = (Spinner) findViewById(R.id.spinnerAction);
-		List<String> actionList = FilterActions(Race.Terran, Category.Building,
+		List<String> actionList = FilterActions(race, category,
 				actionArray);
 
-		ArrayAdapter<String> actionSpinnerAdapter = new ArrayAdapter<String>(
-				this, android.R.layout.simple_spinner_item, actionList);
-		actionSpinnerAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_item);
-		actionSpinner.setAdapter(actionSpinnerAdapter);
+		BuildAdapter buildAdapater = new BuildAdapter(this,
+				R.layout.spinner_row, actionList, actionArray);
+		actionSpinner.setAdapter(buildAdapater);
 		actionSpinner
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -257,7 +242,6 @@ public class BuildAdd extends Activity {
 
 					}
 				});
-
 	}
 
 	private void setSelectedRace() {
@@ -292,7 +276,7 @@ public class BuildAdd extends Activity {
 		setButtonListeners();
 
 		// Set Race to match upper levels
-		setSelectedRace();
+		 setSelectedRace();
 	}
 
 	public void setButtonListeners() {

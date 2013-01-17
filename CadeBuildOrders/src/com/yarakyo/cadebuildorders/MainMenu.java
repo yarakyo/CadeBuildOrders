@@ -8,6 +8,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.support.v4.app.NotificationCompat;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainMenu extends Activity {
 	// View Variables
@@ -42,6 +44,7 @@ public class MainMenu extends Activity {
 				"Cade Build Orders", pendingIntent);
 		notificationBuilder.setContentText("Go to Cade Build Orders App");
 		notificationBuilder.setContentIntent(pendingIntent);
+		notificationBuilder.setAutoCancel(true);
 		nm.notify(uniqueID, notificationBuilder.build());
 	}
 
@@ -59,6 +62,7 @@ public class MainMenu extends Activity {
 		Exit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				nm.cancelAll();
 				finish();
 				Intent intent = new Intent(Intent.ACTION_MAIN);
 				intent.addCategory(Intent.CATEGORY_HOME);
@@ -120,10 +124,9 @@ public class MainMenu extends Activity {
 									int which) {
 								List<Action> allActions = Action
 										.PopulateActions();
-								// Write to saveFile
+								// Write default builds to saveFile
 								try {
-									File file = new File(getFilesDir()
-											+ "/saveFile");
+									File file = new File("saveFile");
 									file.delete();
 									if (!file.exists()) {
 										FileOutputStream fos = openFileOutput(
@@ -154,11 +157,23 @@ public class MainMenu extends Activity {
 
 	}
 
+	private void checkForResume() {
+		try {
+			Intent getIntent = getIntent();
+			Bundle extras = getIntent.getExtras();
+			boolean fromResume = extras.getBoolean("notificationResume");
+			if (fromResume == true)
+				finish();
+		} catch (Exception e) {
+
+		}
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_main_menu);
+		checkForResume();
 		setUpViewVariables();
 		setUpListeners();
 		setUpNotification();
@@ -167,27 +182,12 @@ public class MainMenu extends Activity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		checkForResume();
-	}
-
-	private void checkForResume() {
-		Intent getIntent = getIntent();
-		Bundle extras = getIntent.getExtras();
-		boolean fromResume = extras.getBoolean("notificationResume");
-		if (fromResume == true)
-			finish();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main_menu, menu);
 		return true;
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		nm.cancel(uniqueID);
 	}
 
 }

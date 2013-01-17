@@ -17,21 +17,24 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Add" />
+            android:text="Add" 
+            android:background="@drawable/button_states"/>
 
         <Button
             android:id="@+id/buttonRemoveAction"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Remove" />
+            android:text="Remove" 
+            android:background="@drawable/button_states"/>
 
         <Button
             android:id="@+id/buttonFinishBuild"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Finish" />
+            android:text="Finish" 
+            android:background="@drawable/button_states"/>
     </LinearLayout>
 
     <TextView
@@ -53,10 +56,10 @@
         android:layout_below="@+id/textViewActionList" >
 
         <LinearLayout
-            android:id="@+id/scrollViewActionLinearLayout"
+            android:id="@+id/SVActionLL"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:orientation="vertical" >
+            android:orientation="horizontal" >
         </LinearLayout>
     </ScrollView>
 

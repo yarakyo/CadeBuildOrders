@@ -14,33 +14,49 @@
 
         <Button
             android:id="@+id/buttonAddBuild"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight=".25"
+            android:background="@drawable/button_states"
             android:gravity="center"
             android:text="Add" />
 
         <Button
             android:id="@+id/buttonEditBuild"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight=".25"
+            android:background="@drawable/button_states"
             android:gravity="center"
             android:text="Edit" />
 
         <Button
             android:id="@+id/buttonDeleteBuild"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight=".25"
+            android:background="@drawable/button_states"
             android:gravity="center"
             android:text="Delete" />
+
+        <Button
+            android:id="@+id/buttonBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".25"
+            android:background="@drawable/button_states"
+            android:gravity="center"
+            android:text="Back" />
     </LinearLayout>
 
     <Button
         android:id="@+id/buttonRun"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/buttonLinearLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:background="@drawable/button_states"
         android:text="Run" />
 
     <ScrollView
