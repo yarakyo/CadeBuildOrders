@@ -219,7 +219,7 @@ public class Action implements Serializable {
 		// Zerg Section
 		// Buildings
 		String[] zergBuildings = { "Hatchery", "Extractor", "Spawning Pool",
-				"Evolution Chamer", "Spine Crawler", "Spore Crawler",
+				"Evolution Chamber", "Spine Crawler", "Spore Crawler",
 				"Roach Warren", "Baneling Nest", "Lair","Infestation Pit",
 				"Hydralisk Den", "Spire", "Nydus Network", "Hive",
 				"Ultralisk Cavern", "Greater Spire" };
@@ -260,6 +260,10 @@ public class Action implements Serializable {
 					zergActions[i]));
 			arrayCounter++;
 		}
+		
+		//Extras
+		ActionArray.add(new Action(arrayCounter,Race.Protoss,Category.Action,"Warp Gate"));
+		arrayCounter++;
 		
 		return ActionArray;
 	}

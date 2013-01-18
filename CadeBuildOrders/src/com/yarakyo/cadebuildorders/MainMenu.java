@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
@@ -28,6 +29,7 @@ public class MainMenu extends Activity {
 	Button Protoss;
 	Button Zerg;
 	Button RestoreBuilds;
+	static boolean alreadyRestored = false;
 
 	NotificationManager nm;
 	final int uniqueID = 133787;
@@ -124,13 +126,18 @@ public class MainMenu extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								List<Action> allActions = Action
-										.PopulateActions();
+								// Check already restored?
+
+								if (alreadyRestored == true)
+									return;
+
 								// Write default builds to saveFile
 								try {
 									boolean fileDeleted = deleteFile("saveFile");
+
 									if (fileDeleted == true) {
 										writeDefaultBuilds();
+										alreadyRestored = true;
 									}
 								} catch (Exception e) {
 
@@ -155,9 +162,10 @@ public class MainMenu extends Activity {
 		try {
 			List<Action> allActions = Action.PopulateActions();
 			FileOutputStream fos = openFileOutput("saveFile",
-					MainMenu.this.MODE_WORLD_WRITEABLE);
+					Context.MODE_WORLD_WRITEABLE);
 			ObjectOutputStream out = new ObjectOutputStream(fos);
 			out.writeObject(DefaultBuilds.populateDefaultBuilds(allActions));
+			out.flush();
 			out.close();
 		} catch (Exception e) {
 
@@ -189,7 +197,7 @@ public class MainMenu extends Activity {
 
 	private void checkForFirstRun() {
 		try {
-			//Try to open file
+			// Try to open file
 			FileInputStream fos = openFileInput("saveFile");
 		} catch (FileNotFoundException FileNotFounde) {
 			try {
@@ -197,7 +205,7 @@ public class MainMenu extends Activity {
 			} catch (Exception e) {
 
 			}
-		} 
+		}
 	}
 
 	@Override

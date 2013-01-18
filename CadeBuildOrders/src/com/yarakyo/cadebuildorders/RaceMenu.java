@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.Editable;
@@ -118,9 +119,10 @@ public class RaceMenu extends Activity {
 			boolean fileDeleted = deleteFile("saveFile");
 			if (fileDeleted == true) {
 				FileOutputStream fos = openFileOutput("saveFile",
-						this.MODE_WORLD_WRITEABLE);
+						Context.MODE_WORLD_WRITEABLE);
 				ObjectOutputStream out = new ObjectOutputStream(fos);
 				out.writeObject(allBuilds);
+				out.flush();
 				out.close();
 			}
 		} catch (Exception e) {
