@@ -423,10 +423,16 @@ public class RunBuild extends Activity {
 		return true;
 	}
 	
+	private void tearDownSoundPool()
+	{
+		sp.unload(alertSoundId);
+		sp.release();
+	}
+	
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		sp.release();
+		tearDownSoundPool();
 		finish();
 	}
 	
@@ -434,7 +440,7 @@ public class RunBuild extends Activity {
 	public void onDestroy()
 	{
 		super.onDestroy();
-		sp.release();
+		tearDownSoundPool();
 		finish();
 	}
 	
