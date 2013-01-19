@@ -27,18 +27,17 @@ public class RunElement extends RunBuild {
 	LinearLayout ElementLeftLayout;
 	LinearLayout ElementRightLayout;
 	ImageView runElementImage;
+	boolean soundPlayed;
 
 	// Getters
-	public TextView getTextViewRunActionDescription()
-	{
+	public TextView getTextViewRunActionDescription() {
 		return this.textViewRunActionDescription;
 	}
-	
-	public TextView getTextViewRunActionTime()
-	{
+
+	public TextView getTextViewRunActionTime() {
 		return this.textViewRunActionTime;
 	}
-	
+
 	public ProgressBar getProgressbar() {
 		return this.progressBar;
 	}
@@ -54,13 +53,12 @@ public class RunElement extends RunBuild {
 	public LinearLayout getElementRightLayout() {
 		return this.ElementRightLayout;
 	}
-	
-	public ImageView getImageView()
-	{
+
+	public ImageView getImageView() {
 		return this.runElementImage;
 	}
-	
-	public Action getAction(){
+
+	public Action getAction() {
 		return this.action;
 	}
 
@@ -79,24 +77,30 @@ public class RunElement extends RunBuild {
 		this.ElementRightLayout = ElementRightLayout;
 		this.elementContainerLayout = elementContainerLayout;
 	}
-	
+
 	public void setImageView(ImageView runElementImage) {
 		this.runElementImage = runElementImage;
 	}
 
 	// Methods
-
 	private void changeProgressBarColourToRed() {
 		Drawable drawable = this.progressBar.getProgressDrawable();
 		drawable.setColorFilter(new LightingColorFilter(0xFFff0000, 0xFFff0000));
 	}
 
-	public boolean testTimeExpired(int currentTime) {
-		if (currentTime > this.totalTime) {
-			changeProgressBarColourToRed();
+	public boolean checkExpiredandPlaySound() {
+		if (this.soundPlayed == false && this.expired) {
+			this.soundPlayed = true;
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	public void testTimeExpired(int currentTime) {
+		if (currentTime > this.totalTime) {
+			changeProgressBarColourToRed();
+			this.expired = true;
 		}
 	}
 
@@ -114,15 +118,16 @@ public class RunElement extends RunBuild {
 		this.context = context;
 		this.action = action;
 
-		// Initialise all UI Variables	
+		// Initialise all UI Variables
 		textViewRunActionDescription = new TextView(context);
 		textViewRunActionDescription.setText(action.getActionDescription());
-		textViewRunActionDescription.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
+		textViewRunActionDescription.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
+				20f);
 		textViewRunActionTime = new TextView(context);
-		textViewRunActionTime.setText(action.getMinutes()+ "m " + action.getSeconds() + "s.");
+		textViewRunActionTime.setText(action.getMinutes() + "m "
+				+ action.getSeconds() + "s.");
 		textViewRunActionTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
-		
-		
+
 		progressBar = new ProgressBar(context, null,
 				android.R.attr.progressBarStyleHorizontal);
 		progressBar.setIndeterminate(false);
@@ -134,6 +139,7 @@ public class RunElement extends RunBuild {
 		this.totalTime = totalTime;
 		progressBar.setMax(totalTime);
 
+		this.soundPlayed = false;
 	}
 
 	public void resetProgressBar() {
@@ -148,8 +154,11 @@ public class RunElement extends RunBuild {
 				LayoutParams.WRAP_CONTENT);
 		progressBar.setLayoutParams(layout);
 		this.expired = false;
+
 	}
 
-
+	public void resetSoundPlayed() {
+		this.soundPlayed = false;
+	}
 
 }

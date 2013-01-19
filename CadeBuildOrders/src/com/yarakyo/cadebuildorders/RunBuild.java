@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,11 +14,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -37,6 +42,7 @@ public class RunBuild extends Activity {
 	Button buttonRunPause;
 	Button buttonRunReset;
 	Button buttonRunBack;
+	CheckBox soundCheckBox;
 
 	// Run variables
 	int currentRunTime;
@@ -46,10 +52,16 @@ public class RunBuild extends Activity {
 	List<Action> runActionList;
 	List<RunElement> runElementList;
 	Context Context;
+	Boolean alertSoundsOn = true; // True is sounds on
+	int alertSoundId;
+	
 
 	// Handlers
 	Handler runTimerHandler;
 	Handler runElementHandler;
+
+	// Sound Player
+	SoundPool sp;
 
 	// Getter
 	public TextView getRunTimer() {
@@ -66,6 +78,11 @@ public class RunBuild extends Activity {
 
 	public boolean getPauseState() {
 		return this.pauseState;
+	}
+	
+	public Context getContext()
+	{
+		return this.Context;
 	}
 
 	public List<RunElement> getRunElementList() {
@@ -106,6 +123,26 @@ public class RunBuild extends Activity {
 		this.pauseState = pauseState;
 	}
 
+	public void toggleSounds() {
+		// Toggle On or Off
+		if (this.alertSoundsOn == true) {
+			alertSoundsOn = false;
+		} else {
+			alertSoundsOn = true;
+		}
+	}
+
+	public boolean getAlertSoundOption() {
+		return this.alertSoundsOn;
+	}
+
+	private void checkIfExpiredAndPlayAlert(RunElement tempRunElement) {
+		if (tempRunElement.checkExpiredandPlaySound() == true) {
+			if (getAlertSoundOption() == true)
+				sp.play(alertSoundId, 1f, 1f, 1, 0, 1f);
+		}
+	}
+
 	private void setUpUIHandlers() {
 		// TODO Auto-generated method stub
 		runTimerHandler = new Handler() {
@@ -124,7 +161,14 @@ public class RunBuild extends Activity {
 				while (tempRELIterator.hasNext()) {
 					RunElement tempRunElement = tempRELIterator.next();
 					tempRunElement.setProgressBarTime(getCurrentRunTime());
+
+					// Set red progress bar if expired
 					tempRunElement.testTimeExpired(getCurrentRunTime());
+
+					// If expired then play sound
+					checkIfExpiredAndPlayAlert(tempRunElement);
+
+					// Remove after 5 seconds of being expired
 					if (tempRunElement.testForRemovalTime(getCurrentRunTime()) == true) {
 						// Clear all children from Views
 						SVRunLLayout.removeView(tempRunElement
@@ -145,6 +189,7 @@ public class RunBuild extends Activity {
 		List<RunElement> tempRunElementList = getRunElementList();
 		for (RunElement runElement : tempRunElementList) {
 			runElement.resetProgressBar();
+			runElement.resetSoundPlayed();
 		}
 	}
 
@@ -197,6 +242,20 @@ public class RunBuild extends Activity {
 				RunBuild.this.finish();
 			}
 		});
+
+		// Check box for sounds
+		soundCheckBox = (CheckBox) findViewById(R.id.checkSoundAlerts);
+		soundCheckBox.setChecked(true);
+		soundCheckBox
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						toggleSounds();
+					}
+				});
+
 	}
 
 	private LinearLayout packRunElementIntoContainer(RunElement tempRunElement) {
@@ -208,28 +267,29 @@ public class RunBuild extends Activity {
 		LinearLayout ElementLeftLayout = new LinearLayout(Context);
 		ElementLeftLayout.setOrientation(LinearLayout.VERTICAL);
 		ImageView runElementImage = new ImageView(Context);
-		String imagePointer = "icon_"; 
+		String imagePointer = "icon_";
 		imagePointer += String.valueOf(tempRunElement.getAction().actionID);
-		int id = getResources().getIdentifier( imagePointer, "drawable", getPackageName());
+		int id = getResources().getIdentifier(imagePointer, "drawable",
+				getPackageName());
 		runElementImage.setImageResource(id);
-		
+
 		ElementLeftLayout.addView(runElementImage);
 
-		//Right Layout
+		// Right Layout
 		LinearLayout ElementRightLayout = new LinearLayout(Context);
 		ElementRightLayout.setOrientation(LinearLayout.VERTICAL);
 		ElementRightLayout.setLayoutParams(new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
-		ElementRightLayout
-				.addView(tempRunElement.getTextViewRunActionDescription());
+		ElementRightLayout.addView(tempRunElement
+				.getTextViewRunActionDescription());
 		ElementRightLayout.addView(tempRunElement.getTextViewRunActionTime());
 		ElementRightLayout.addView(tempRunElement.getProgressbar());
 
 		ElementContainerLayout.addView(ElementLeftLayout);
 		ElementContainerLayout.addView(ElementRightLayout);
 
-		//Add references to runElement object
+		// Add references to runElement object
 		tempRunElement.setContainerLayout(ElementContainerLayout,
 				ElementLeftLayout, ElementRightLayout);
 		tempRunElement.setImageView(runElementImage);
@@ -296,6 +356,11 @@ public class RunBuild extends Activity {
 		SVRunLLayout = (LinearLayout) findViewById(R.id.SVRunLLayout);
 	}
 
+	private void setUpSoundPool() {
+		sp = new SoundPool(10, AudioManager.STREAM_MUSIC, 100);
+		alertSoundId = sp.load(this, R.raw.actionalert, 1);
+	}
+
 	private void setUpListenersAndVariables() {
 
 		// Set Default time
@@ -316,6 +381,8 @@ public class RunBuild extends Activity {
 		// Set up Run Elements
 		setUpRunElements();
 
+		// Set up Sound Pool
+		setUpSoundPool();
 	}
 
 	@Override
@@ -340,7 +407,7 @@ public class RunBuild extends Activity {
 							runTimerHandler.sendEmptyMessage(0);
 							runElementHandler.sendEmptyMessage(0);
 							setCurrentTime(getCurrentRunTime() + 1);
-							sleep(700);
+							sleep(710);
 						}
 					} catch (Exception e) {
 
