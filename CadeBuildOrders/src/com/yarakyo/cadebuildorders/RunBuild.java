@@ -422,4 +422,21 @@ public class RunBuild extends Activity {
 		getMenuInflater().inflate(R.menu.activity_run_build, menu);
 		return true;
 	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		sp.release();
+		finish();
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		sp.release();
+		finish();
+	}
+	
+
 }
