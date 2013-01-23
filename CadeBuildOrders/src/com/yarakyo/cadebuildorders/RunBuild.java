@@ -43,7 +43,7 @@ public class RunBuild extends Activity {
 	Button buttonRunReset;
 	Button buttonRunBack;
 	CheckBox soundCheckBox;
-
+	TextView textViewRunBuildName;
 	// Run variables
 	int currentRunTime;
 	boolean runState; // True is running
@@ -144,7 +144,6 @@ public class RunBuild extends Activity {
 	}
 
 	private void setUpUIHandlers() {
-		// TODO Auto-generated method stub
 		runTimerHandler = new Handler() {
 			public void handleMessage(Message msg) {
 				int currentRunTime = getCurrentRunTime();
@@ -328,8 +327,12 @@ public class RunBuild extends Activity {
 		Intent runIntent = getIntent();
 		ActionList passedBuild = (ActionList) runIntent
 				.getSerializableExtra("RunBuild");
-		this.runBuildName = passedBuild.getBuildName();
+		
 
+		//Set Build Name
+		this.runBuildName = passedBuild.getBuildName();
+		textViewRunBuildName.setText(runBuildName);
+		
 		// Set up Local Variables
 		this.runElementList = new ArrayList<RunElement>();
 		this.runActionList = new ArrayList<Action>();
@@ -352,8 +355,9 @@ public class RunBuild extends Activity {
 
 	private void setUpDisplayVaraibles() {
 		runTimer = (TextView) findViewById(R.id.textViewRunTimer);
+		textViewRunBuildName = (TextView) findViewById(R.id.textViewRunBuildName);
 		scrollViewRun = (ScrollView) findViewById(R.id.scrollViewRun);
-		SVRunLLayout = (LinearLayout) findViewById(R.id.SVRunLLayout);
+		SVRunLLayout = (LinearLayout) findViewById(R.id.SVRunLLayout);		
 	}
 
 	private void setUpSoundPool() {

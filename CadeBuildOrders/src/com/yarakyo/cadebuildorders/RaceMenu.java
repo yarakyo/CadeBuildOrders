@@ -252,7 +252,7 @@ public class RaceMenu extends Activity {
 						.create();
 				final EditText inputBuildName = new EditText(RaceMenu.this);
 				alertBuildName.setTitle("Add Build");
-				alertBuildName.setMessage("Enter new build Name");
+				alertBuildName.setMessage("Enter new build name");
 				alertBuildName.setView(inputBuildName);
 				alertBuildName.setPositiveButton("Add",
 						new DialogInterface.OnClickListener() {
