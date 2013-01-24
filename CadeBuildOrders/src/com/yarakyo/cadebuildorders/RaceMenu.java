@@ -400,8 +400,15 @@ public class RaceMenu extends Activity {
 			radioButton.setText(temp.getBuildName());
 			radioGroupBuild.addView(radioButton);
 			radioIndex++;
+		}		
+		
+		//Prevents checked from being lost between activity changes
+		int checked = radioGroupBuild.getCheckedRadioButtonId();
+		if(checked != -1)
+		{
+			radioGroupBuild.check(-1); // Clear All
+			radioGroupBuild.check(checked); //Redraw it
 		}
-
 	}
 
 	private void handleAddBuild(Intent savedIntent) {
