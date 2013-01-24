@@ -3,6 +3,7 @@ package com.yarakyo.cadebuildorders;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -14,6 +15,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -30,7 +32,11 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class RunBuild extends Activity {
+public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
+
+	public enum AlertOption {
+		TTS, Alert
+	}
 
 	// UI Variables
 	RadioGroup radioGroupRun;
@@ -42,8 +48,10 @@ public class RunBuild extends Activity {
 	Button buttonRunPause;
 	Button buttonRunReset;
 	Button buttonRunBack;
-	CheckBox soundCheckBox;
+	CheckBox checkSoundAlerts;
+	CheckBox checkTTSAlerts;
 	TextView textViewRunBuildName;
+
 	// Run variables
 	int currentRunTime;
 	boolean runState; // True is running
@@ -52,9 +60,7 @@ public class RunBuild extends Activity {
 	List<Action> runActionList;
 	List<RunElement> runElementList;
 	Context Context;
-	Boolean alertSoundsOn = true; // True is sounds on
-	int alertSoundId;
-	
+	boolean runExited = false;	//Set to true when user presses backspace or back button
 
 	// Handlers
 	Handler runTimerHandler;
@@ -62,6 +68,14 @@ public class RunBuild extends Activity {
 
 	// Sound Player
 	SoundPool sp;
+
+	// Text to Speech and Alerts
+	TextToSpeech TTS;
+	boolean TTSenabled = false;
+	Boolean alertTTSOn = true;
+	Boolean alertSoundsOn = true;
+	int alertSoundId;
+	AlertOption alertOption = AlertOption.TTS;
 
 	// Getter
 	public TextView getRunTimer() {
@@ -79,10 +93,14 @@ public class RunBuild extends Activity {
 	public boolean getPauseState() {
 		return this.pauseState;
 	}
-	
-	public Context getContext()
-	{
+
+	public Context getContext() {
 		return this.Context;
+	}
+	
+	public boolean getRunExited()
+	{
+		return this.runExited;
 	}
 
 	public List<RunElement> getRunElementList() {
@@ -92,6 +110,15 @@ public class RunBuild extends Activity {
 	public LinearLayout getRunElementLinearLayout() {
 		return this.SVRunLLayout;
 	}
+	
+	public boolean getAlertSoundOn() {
+		return this.alertSoundsOn;
+	}
+
+	public boolean getAlertTTSOn() {
+		return this.alertTTSOn;
+	}
+	
 
 	// Setters
 	public void setRunTimer(int time) {
@@ -110,9 +137,29 @@ public class RunBuild extends Activity {
 		runTimer = (TextView) findViewById(R.id.textViewRunTimer);
 		runTimer.setText(formattedTime);
 	}
+	
+	public void setAlertSoundOn(Boolean value)
+	{
+		this.alertSoundsOn = value;
+	}
+	
+	public void setAlertTTSOn(Boolean value)
+	{
+		this.alertTTSOn = value;
+	}
+	
 
 	public void setCurrentTime(int newTime) {
 		this.currentRunTime = newTime;
+	}
+
+	private void resetTimer() {
+		this.currentRunTime = 10;
+	}
+	
+	public void setRunExited(boolean value)
+	{
+		this.runExited = value;
 	}
 
 	public void setRunState(boolean runState) {
@@ -123,23 +170,39 @@ public class RunBuild extends Activity {
 		this.pauseState = pauseState;
 	}
 
-	public void toggleSounds() {
-		// Toggle On or Off
-		if (this.alertSoundsOn == true) {
-			alertSoundsOn = false;
-		} else {
-			alertSoundsOn = true;
+	public void toggleSounds(AlertOption alertOption) {
+		if (alertOption == AlertOption.Alert) {
+			if (getAlertSoundOn() == true) {
+				setAlertSoundOn(false);
+			} else {
+				setAlertSoundOn(true);
+			}
+
 		}
+
+		if (alertOption == AlertOption.TTS) {
+			if (getAlertTTSOn() == true) {
+				setAlertTTSOn(false);
+			} else {
+				setAlertTTSOn(true);
+			}
+		}
+
 	}
 
-	public boolean getAlertSoundOption() {
-		return this.alertSoundsOn;
-	}
 
+
+	
+	//Methods
 	private void checkIfExpiredAndPlayAlert(RunElement tempRunElement) {
 		if (tempRunElement.checkExpiredandPlaySound() == true) {
-			if (getAlertSoundOption() == true)
+			if (getAlertSoundOn() == true)
 				sp.play(alertSoundId, 1f, 1f, 1, 0, 1f);
+			if (getAlertTTSOn() == true) {
+				String toSay = tempRunElement.getAction().actionDescription;
+				TTS.speak(toSay, TextToSpeech.QUEUE_ADD, null);
+			}
+
 		}
 	}
 
@@ -150,7 +213,7 @@ public class RunBuild extends Activity {
 				RunBuild.this.setRunTimer(currentRunTime);
 			}
 		};
-
+		
 		runElementHandler = new Handler() {
 			// running Handler
 			public void handleMessage(Message msg) {
@@ -178,10 +241,6 @@ public class RunBuild extends Activity {
 
 		};
 
-	}
-
-	private void resetTimer() {
-		this.currentRunTime = 0;
 	}
 
 	private void resetRunElements() {
@@ -224,12 +283,12 @@ public class RunBuild extends Activity {
 			public void onClick(View v) {
 				// Reset conditions
 				setPauseState(true);
-				setCurrentTime(0);
-				runTimerHandler.sendEmptyMessage(0);
-				runElementHandler.sendEmptyMessage(0);
+				resetTimer();
 				resetRunElements();
 				resetDisplayRunElements();
 				displayRunElements();
+				runTimerHandler.sendEmptyMessage(0);
+				runElementHandler.sendEmptyMessage(0);
 			}
 		});
 
@@ -238,20 +297,34 @@ public class RunBuild extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+				setRunExited(true);
+				shutdownProcedure();
 				RunBuild.this.finish();
 			}
 		});
 
 		// Check box for sounds
-		soundCheckBox = (CheckBox) findViewById(R.id.checkSoundAlerts);
-		soundCheckBox.setChecked(true);
-		soundCheckBox
+		checkSoundAlerts = (CheckBox) findViewById(R.id.checkSoundAlerts);
+		checkSoundAlerts.setChecked(true);
+		checkSoundAlerts
 				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
-						toggleSounds();
+						toggleSounds(AlertOption.Alert);
+					}
+				});
+
+		checkTTSAlerts = (CheckBox) findViewById(R.id.checkTTSAlerts);
+		checkTTSAlerts.setChecked(true);
+		checkTTSAlerts
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						toggleSounds(AlertOption.TTS);
 					}
 				});
 
@@ -327,12 +400,11 @@ public class RunBuild extends Activity {
 		Intent runIntent = getIntent();
 		ActionList passedBuild = (ActionList) runIntent
 				.getSerializableExtra("RunBuild");
-		
 
-		//Set Build Name
+		// Set Build Name
 		this.runBuildName = passedBuild.getBuildName();
 		textViewRunBuildName.setText(runBuildName);
-		
+
 		// Set up Local Variables
 		this.runElementList = new ArrayList<RunElement>();
 		this.runActionList = new ArrayList<Action>();
@@ -350,19 +422,38 @@ public class RunBuild extends Activity {
 		// Set up Thread to update elements
 
 		displayRunElements();
-
+		runTimerHandler.sendEmptyMessage(0);
+		runElementHandler.sendEmptyMessage(0);
 	}
 
 	private void setUpDisplayVaraibles() {
 		runTimer = (TextView) findViewById(R.id.textViewRunTimer);
 		textViewRunBuildName = (TextView) findViewById(R.id.textViewRunBuildName);
 		scrollViewRun = (ScrollView) findViewById(R.id.scrollViewRun);
-		SVRunLLayout = (LinearLayout) findViewById(R.id.SVRunLLayout);		
+		SVRunLLayout = (LinearLayout) findViewById(R.id.SVRunLLayout);
 	}
 
 	private void setUpSoundPool() {
 		sp = new SoundPool(10, AudioManager.STREAM_MUSIC, 100);
 		alertSoundId = sp.load(this, R.raw.actionalert, 1);
+	}
+
+	@Override
+	public void onInit(int status) {
+		if (status == TextToSpeech.SUCCESS) {
+			int result = TTS.setLanguage(Locale.ENGLISH);
+
+			if (result == TextToSpeech.LANG_MISSING_DATA
+					|| result == TextToSpeech.LANG_NOT_SUPPORTED) {
+				TTSenabled = false;
+			} else {
+				TTSenabled = true;
+			}
+		}
+	}
+
+	private void setUpTTS() {
+		TTS = new TextToSpeech(this, this);		
 	}
 
 	private void setUpListenersAndVariables() {
@@ -387,6 +478,9 @@ public class RunBuild extends Activity {
 
 		// Set up Sound Pool
 		setUpSoundPool();
+
+		// Set up TTS
+		setUpTTS();
 	}
 
 	@Override
@@ -405,9 +499,10 @@ public class RunBuild extends Activity {
 		runThread = new Thread() {
 			@Override
 			public void run() {
-				while (true) {
+				while (this.isInterrupted() == false) {
+					if(getRunExited() == true) return;
 					try {
-						if (getPauseState() == false && getRunState() == true) {
+						if (getPauseState() == false && getRunState() == true && getRunExited() == false) {
 							runTimerHandler.sendEmptyMessage(0);
 							runElementHandler.sendEmptyMessage(0);
 							setCurrentTime(getCurrentRunTime() + 1);
@@ -426,27 +521,35 @@ public class RunBuild extends Activity {
 		getMenuInflater().inflate(R.menu.activity_run_build, menu);
 		return true;
 	}
-	
-	private void tearDownSoundPool()
-	{
+
+	private void tearDownSoundPool() {
 		sp.unload(alertSoundId);
 		sp.release();
+	}
+
+	private void shutdownProcedure()
+	{
+		runThread.interrupt();		
+		// Shut Down TTS
+		if (TTS != null) {
+			TTS.stop();
+			TTS.shutdown();
+		}
+		// Unload all sounds
+		tearDownSoundPool();
+		finish();
 	}
 	
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		tearDownSoundPool();
-		finish();
+		setRunExited(true);
+		shutdownProcedure();
 	}
-	
+
 	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-		tearDownSoundPool();
-		finish();
+	public void onDestroy() {
+		super.onDestroy();		
 	}
-	
 
 }

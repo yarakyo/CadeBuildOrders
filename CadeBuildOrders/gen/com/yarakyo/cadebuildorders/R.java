@@ -220,7 +220,7 @@ public final class R {
         public static final int CadeSoftware=0x7f090017;
         public static final int RestoreBuilds=0x7f09001e;
         public static final int SVActionLL=0x7f090006;
-        public static final int SVRunLLayout=0x7f090033;
+        public static final int SVRunLLayout=0x7f090034;
         public static final int TextViewAction=0x7f09000e;
         public static final int TextViewCategory=0x7f09000c;
         public static final int TextViewRace=0x7f09000a;
@@ -247,6 +247,7 @@ public final class R {
         public static final int buttonTerran=0x7f09001a;
         public static final int buttonZerg=0x7f09001c;
         public static final int checkSoundAlerts=0x7f090030;
+        public static final int checkTTSAlerts=0x7f090031;
         public static final int editTextTimeMinutes=0x7f090012;
         public static final int editTextTimeSeconds=0x7f090014;
         public static final int imageViewCade=0x7f090018;
@@ -254,14 +255,14 @@ public final class R {
         public static final int linearLayoutActionButtons=0x7f090000;
         public static final int linearLayoutTimer=0x7f09002e;
         public static final int linearLayoutTop=0x7f090029;
-        public static final int menu_settings=0x7f090036;
-        public static final int row_icon=0x7f090034;
-        public static final int row_name=0x7f090035;
+        public static final int menu_settings=0x7f090037;
+        public static final int row_icon=0x7f090035;
+        public static final int row_name=0x7f090036;
         public static final int scrollViewActionsList=0x7f090005;
         public static final int scrollViewBuildAdd=0x7f090009;
         public static final int scrollViewBuilds=0x7f090026;
         public static final int scrollViewLinearLayoutVertical=0x7f090027;
-        public static final int scrollViewRun=0x7f090032;
+        public static final int scrollViewRun=0x7f090033;
         public static final int spinnerAction=0x7f09000f;
         public static final int spinnerCategory=0x7f09000d;
         public static final int spinnerRace=0x7f09000b;
@@ -270,7 +271,7 @@ public final class R {
         public static final int textViewAddActionTitle=0x7f090008;
         public static final int textViewBuilds=0x7f090028;
         public static final int textViewRunBuildName=0x7f09002f;
-        public static final int textViewRunTimer=0x7f090031;
+        public static final int textViewRunTimer=0x7f090032;
         public static final int textViewTitle=0x7f09001d;
     }
     public static final class layout {
