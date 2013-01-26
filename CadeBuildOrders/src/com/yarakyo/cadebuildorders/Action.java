@@ -20,6 +20,7 @@ public class Action implements Serializable {
 	// Timings
 	int minutes;
 	int seconds;
+	int supply;
 
 	// Getters
 	public String getRace() {
@@ -40,6 +41,10 @@ public class Action implements Serializable {
 
 	public int getSeconds() {
 		return this.seconds;
+	}
+
+	public int getSupply() {
+		return this.supply;
 	}
 
 	// Setters
@@ -76,9 +81,9 @@ public class Action implements Serializable {
 		}
 		return returnAction;
 	}
-	
-	public static List<Integer> applyFilterAndReturnIds(Race Race, Category Category,
-			List<Action> actionArray) {
+
+	public static List<Integer> applyFilterAndReturnIds(Race Race,
+			Category Category, List<Action> actionArray) {
 		List<Integer> filteredActions = new ArrayList<Integer>();
 		Iterator<Action> actionArrayIterator = actionArray.iterator();
 		while (actionArrayIterator.hasNext()) {
@@ -99,6 +104,7 @@ public class Action implements Serializable {
 		this.actionDescription = "Empty";
 		this.minutes = 0;
 		this.seconds = 0;
+		this.supply = 0;
 	}
 
 	// Constructor at BuildAdd
@@ -120,6 +126,16 @@ public class Action implements Serializable {
 		this.seconds = seconds;
 	}
 
+	public Action(Action action, int minutes, int seconds, int supply) {
+		this.race = action.race;
+		this.category = action.category;
+		this.actionID = action.actionID;
+		this.actionDescription = action.actionDescription;
+		this.minutes = minutes;
+		this.seconds = seconds;
+		this.supply = supply;
+	}
+
 	public static List<Action> PopulateActions() {
 		List<Action> ActionArray = new ArrayList<Action>();
 		int arrayCounter = 1;
@@ -130,7 +146,7 @@ public class Action implements Serializable {
 				"Orbital Command", "Planetary Fortress", "Refinery",
 				"Barracks", "Engineering Bay", "Sensor Tower",
 				"Missile Turret", "Factory", "Ghost Academy", "Bunker",
-				"Starport", "Armory", "Fusion Core" ,"Tech Lab","Reactor"};
+				"Starport", "Armory", "Fusion Core", "Tech Lab", "Reactor" };
 		for (int i = 0; i < terranBuildings.length; i++) {
 			ActionArray.add(new Action(arrayCounter, Race.Terran,
 					Category.Building, terranBuildings[i]));
@@ -220,7 +236,7 @@ public class Action implements Serializable {
 		// Buildings
 		String[] zergBuildings = { "Hatchery", "Extractor", "Spawning Pool",
 				"Evolution Chamber", "Spine Crawler", "Spore Crawler",
-				"Roach Warren", "Baneling Nest", "Lair","Infestation Pit",
+				"Roach Warren", "Baneling Nest", "Lair", "Infestation Pit",
 				"Hydralisk Den", "Spire", "Nydus Network", "Hive",
 				"Ultralisk Cavern", "Greater Spire" };
 		for (int i = 0; i < zergBuildings.length; i++) {
@@ -232,8 +248,8 @@ public class Action implements Serializable {
 		// Units
 		String[] zergUnits = { "Drone", "Zergling", "Baneling", "Roach",
 				"Hydralisk", "Mutalisk", "Corruptor", "Infestor", "Ultralisk",
-				"Brood Lord", "Overlord", "Overseer", "Queen",
-				"Changeling", "Infested Terran" };
+				"Brood Lord", "Overlord", "Overseer", "Queen", "Changeling",
+				"Infested Terran" };
 		for (int i = 0; i < zergUnits.length; i++) {
 			ActionArray.add(new Action(arrayCounter, Race.Zerg, Category.Unit,
 					zergUnits[i]));
@@ -253,18 +269,70 @@ public class Action implements Serializable {
 				"Centrifugal Hooks", "Glial Reconstitution", "Metabolic Boost",
 				"Pneumatized Carapace", "Grooved Spines", "Burrow",
 				"Neural Parasite", "Pathogen Glands", "Adrenal Glands",
-				"Tunneling Claws", "Ventral Sacs"};
+				"Tunneling Claws", "Ventral Sacs" };
 
 		for (int i = 0; i < zergActions.length; i++) {
-			ActionArray.add(new Action(arrayCounter, Race.Zerg, Category.Action,
-					zergActions[i]));
+			ActionArray.add(new Action(arrayCounter, Race.Zerg,
+					Category.Action, zergActions[i]));
 			arrayCounter++;
 		}
-		
-		//Extras
-		ActionArray.add(new Action(arrayCounter,Race.Protoss,Category.Action,"Warp Gate"));
+
+		// WOL Extras
+		ActionArray.add(new Action(arrayCounter, Race.Protoss, Category.Action,
+				"Warp Gate"));
 		arrayCounter++;
-		
+
+		// HOTS Units
+		String[] hotsTerranUnits = { "Hellbat", "Widow Mine" };
+
+		for (int i = 0; i < hotsTerranUnits.length; i++) {
+			ActionArray.add(new Action(arrayCounter, Race.Terran,
+					Category.Unit, hotsTerranUnits[i]));
+			arrayCounter++;
+		}
+
+		String[] hotsProtossUnits = { "Oracle", "Tempest", "Mothership Core", };
+
+		for (int i = 0; i < hotsProtossUnits.length; i++) {
+			ActionArray.add(new Action(arrayCounter, Race.Protoss,
+					Category.Unit, hotsProtossUnits[i]));
+			arrayCounter++;
+		}
+
+		String[] hotsZergUnits = { "Viper", "Swarm Host", "Locust" };
+
+		for (int i = 0; i < hotsZergUnits.length; i++) {
+			ActionArray.add(new Action(arrayCounter, Race.Zerg, Category.Unit,
+					hotsZergUnits[i]));
+			arrayCounter++;
+		}
+
+		// HOTS upgrades
+
+		String[] hotsTerranActions = { "Drilling Claws" };
+
+		for (int i = 0; i < hotsTerranActions.length; i++) {
+			ActionArray.add(new Action(arrayCounter, Race.Terran,
+					Category.Action, hotsTerranActions[i]));
+			arrayCounter++;
+		}
+
+		String[] hotsZergActions = { "Enduring Locusts", "Muscular Augments" };
+
+		for (int i = 0; i < hotsZergActions.length; i++) {
+			ActionArray.add(new Action(arrayCounter, Race.Zerg,
+					Category.Action, hotsZergActions[i]));
+			arrayCounter++;
+		}
+
+		/*
+		 * String[] hotsProtossActions = {};
+		 * 
+		 * for (int i = 0; i < hotsProtossActions.length; i++) {
+		 * ActionArray.add(new Action(arrayCounter, Race.Protoss,
+		 * Category.Action, hotsProtossActions[i])); arrayCounter++; }
+		 */
+
 		return ActionArray;
 	}
 }

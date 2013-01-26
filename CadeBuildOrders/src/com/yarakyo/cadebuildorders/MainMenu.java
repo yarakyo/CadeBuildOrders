@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ public class MainMenu extends Activity {
 	Button Zerg;
 	Button RestoreBuilds;
 	static boolean alreadyRestored = false;
-
+	
 	NotificationManager nm;
 	final int uniqueID = 133787;
 
@@ -57,7 +58,6 @@ public class MainMenu extends Activity {
 		Terran = (Button) findViewById(R.id.buttonTerran);
 		Protoss = (Button) findViewById(R.id.buttonProtoss);
 		Zerg = (Button) findViewById(R.id.buttonZerg);
-		RestoreBuilds = (Button) findViewById(R.id.RestoreBuilds);
 	}
 
 	private void setUpListeners() {
@@ -108,54 +108,6 @@ public class MainMenu extends Activity {
 			}
 		});
 
-		// Restore all builds
-		RestoreBuilds.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				final AlertDialog.Builder alertConfirmDelete = new AlertDialog.Builder(
-						MainMenu.this);
-				final AlertDialog alertConfirmDeleteDialog = alertConfirmDelete
-						.create();
-				alertConfirmDelete.setTitle("Restore Builds");
-				alertConfirmDelete
-						.setMessage("Are you sure you restore default builds? \n(YOU WILL LOSE ALL YOUR BUILDS)");
-				alertConfirmDelete.setPositiveButton("Yes",
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// Check already restored?
-
-								if (alreadyRestored == true)
-									return;
-
-								// Write default builds to saveFile
-								try {
-									boolean fileDeleted = deleteFile("saveFile");
-
-									if (fileDeleted == true) {
-										writeDefaultBuilds();
-										alreadyRestored = true;
-									}
-								} catch (Exception e) {
-
-								}
-							}
-						});
-				alertConfirmDelete.setNegativeButton("No",
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
-				alertConfirmDelete.show();
-			}
-		});
-
 	}
 
 	private void writeDefaultBuilds() {
@@ -187,7 +139,7 @@ public class MainMenu extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_menu);
+		setContentView(R.layout.activity_main_menu);		
 		checkForResume();
 		setUpViewVariables();
 		setUpListeners();
@@ -223,6 +175,61 @@ public class MainMenu extends Activity {
 	public void onBackPressed() {
 		super.onBackPressed();
 		nm.cancelAll();
+	}
+	
+	private void setupDefaultBuildListenerAndShow()
+	{
+		final AlertDialog.Builder alertConfirmDelete = new AlertDialog.Builder(
+				this);
+		final AlertDialog alertConfirmDeleteDialog = alertConfirmDelete
+				.create();
+		alertConfirmDelete.setTitle("Restore Builds");
+		alertConfirmDelete
+				.setMessage("Are you sure you restore default builds? \n(YOU WILL LOSE ALL YOUR BUILDS)");
+		alertConfirmDelete.setPositiveButton("Yes",
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						// Check already restored?
+
+						if (alreadyRestored == true)
+							return;
+
+						// Write default builds to saveFile
+						try {
+							boolean fileDeleted = deleteFile("saveFile");
+
+							if (fileDeleted == true) {
+								writeDefaultBuilds();
+								alreadyRestored = true;
+							}
+						} catch (Exception e) {
+
+						}
+					}
+				});
+		alertConfirmDelete.setNegativeButton("No",
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+					}
+				});		
+		alertConfirmDelete.show();
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		//Restore all builds from menu
+		if(item.getItemId() == R.id.menuRestoreBuilds)
+		{
+			setupDefaultBuildListenerAndShow();
+		}
+		
+		return super.onOptionsItemSelected(item);
 	}
 
 }

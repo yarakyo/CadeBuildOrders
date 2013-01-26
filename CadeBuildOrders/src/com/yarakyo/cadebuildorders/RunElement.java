@@ -124,8 +124,17 @@ public class RunElement extends RunBuild {
 		textViewRunActionDescription.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
 				20f);
 		textViewRunActionTime = new TextView(context);
-		textViewRunActionTime.setText(action.getMinutes() + "m "
-				+ action.getSeconds() + "s.");
+
+		int supply = action.getSupply();
+		if (supply != 0) {
+			textViewRunActionTime.setText(action.getMinutes() + "m "
+					+ action.getSeconds() + "s  - Supply: "
+					+ action.getSupply());
+		} else {
+			textViewRunActionTime.setText(action.getMinutes() + "m "
+					+ action.getSeconds() + "s.");
+		}
+
 		textViewRunActionTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
 
 		progressBar = new ProgressBar(context, null,

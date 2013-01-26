@@ -255,7 +255,8 @@ public class Build extends Activity {
 		Action temp = Action.getActionByID(actionArray, savedID);
 		int minutes = savedBundle.getInt("Minutes");
 		int seconds = savedBundle.getInt("Seconds");
-		Action newAction = new Action(temp, minutes, seconds);
+		int supply = savedBundle.getInt("Supply");
+		Action newAction = new Action(temp, minutes, seconds,supply);
 
 		// Add to List
 		addBuildOrderActionToList(newAction);

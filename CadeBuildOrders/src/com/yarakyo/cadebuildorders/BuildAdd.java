@@ -35,8 +35,10 @@ public class BuildAdd extends Activity {
 	// Timing Variables
 	int currentMinutes;
 	int currentSeconds;
+	int currentSupply;
 	EditText editTextTimeMinutes;
 	EditText editTextTimeSeconds;
+	EditText editTextTimeSupply;
 
 	// Buttons
 	Button buttonAddActionOK;
@@ -55,6 +57,10 @@ public class BuildAdd extends Activity {
 		return this.currentSeconds;
 	}
 
+	public int getCurrentSupply() {
+		return this.currentSupply;
+	}
+
 	// Setters
 	public void setMinutes(int minutes) {
 		this.currentMinutes = minutes;
@@ -62,6 +68,10 @@ public class BuildAdd extends Activity {
 
 	public void setSeconds(int seconds) {
 		this.currentSeconds = seconds;
+	}
+
+	public void setSupply(int supply) {
+		this.currentSupply = supply;
 	}
 
 	private int LookUpActionID(List<Action> actionArray, String actionString) {
@@ -115,7 +125,7 @@ public class BuildAdd extends Activity {
 		setUpCatagorySpinner();
 
 		// Set the Action Spinner
-		setUpActionSpinner(currentRace,Category.Building);
+		setUpActionSpinner(currentRace, Category.Building);
 
 	}
 
@@ -136,7 +146,7 @@ public class BuildAdd extends Activity {
 		this.currentCategory = selectedCategory;
 
 		// Set the Action Spinner
-		setUpActionSpinner(this.currentRace,this.currentCategory);
+		setUpActionSpinner(this.currentRace, this.currentCategory);
 	}
 
 	private void ActionSpinnerChange(Object item, int position) {
@@ -148,12 +158,12 @@ public class BuildAdd extends Activity {
 	private void SetupSpinnersAndDefaultSpinnerValues() {
 		// Set the Race Spinner
 		setUpRaceSpinner();
-		
+
 		// Set the Category Spinner
 		setUpCatagorySpinner();
-		
+
 		// Set the Action Spinner
-		setUpActionSpinner(Race.Terran,Category.Building);
+		setUpActionSpinner(Race.Terran, Category.Building);
 	}
 
 	private void setUpCatagorySpinner() {
@@ -217,10 +227,9 @@ public class BuildAdd extends Activity {
 				});
 	}
 
-	private void setUpActionSpinner(Race race,Category category) {
+	private void setUpActionSpinner(Race race, Category category) {
 		Spinner actionSpinner = (Spinner) findViewById(R.id.spinnerAction);
-		List<String> actionList = FilterActions(race, category,
-				actionArray);
+		List<String> actionList = FilterActions(race, category, actionArray);
 
 		BuildAdapter buildAdapater = new BuildAdapter(this,
 				R.layout.spinner_row, actionList, actionArray);
@@ -276,7 +285,7 @@ public class BuildAdd extends Activity {
 		setButtonListeners();
 
 		// Set Race to match upper levels
-		 setSelectedRace();
+		setSelectedRace();
 	}
 
 	public void setButtonListeners() {
@@ -294,6 +303,7 @@ public class BuildAdd extends Activity {
 				bundle.putInt("Action", BuildAdd.this.getCurrentActionID());
 				bundle.putInt("Minutes", BuildAdd.this.getCurrentMinutes());
 				bundle.putInt("Seconds", BuildAdd.this.getCurrentSeconds());
+				bundle.putInt("Supply", BuildAdd.this.getCurrentSupply());
 				Intent closeIntent = new Intent();
 				closeIntent.putExtras(bundle);
 				setResult(RESULT_OK, closeIntent);
@@ -320,12 +330,15 @@ public class BuildAdd extends Activity {
 	public void setDefaultTimeAndRules() {
 		editTextTimeMinutes = (EditText) findViewById(R.id.editTextTimeMinutes);
 		editTextTimeSeconds = (EditText) findViewById(R.id.editTextTimeSeconds);
+		editTextTimeSupply = (EditText) findViewById(R.id.editTextTimeSupply);
 
 		editTextTimeMinutes.setText("");
 		editTextTimeSeconds.setText("");
+		editTextTimeSupply.setText("");
 
 		this.currentMinutes = 0;
 		this.currentSeconds = 0;
+		this.currentSupply = 0;
 
 		editTextTimeMinutes.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -382,6 +395,46 @@ public class BuildAdd extends Activity {
 					}
 
 					BuildAdd.this.setSeconds(seconds);
+				} catch (Exception e) {
+
+				}
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1,
+					int arg2, int arg3) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
+
+		editTextTimeSupply.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable editTextArgument) {
+				// TODO Auto-generated method stub
+
+				try {
+					int supply = Integer.parseInt(editTextArgument.toString());
+					// Less than 60
+					if (supply > 200) {
+						supply = 200;
+					}
+
+					if (supply < 0) {
+						supply = 0;
+					}
+
+					BuildAdd.this.setSupply(supply);
 				} catch (Exception e) {
 
 				}

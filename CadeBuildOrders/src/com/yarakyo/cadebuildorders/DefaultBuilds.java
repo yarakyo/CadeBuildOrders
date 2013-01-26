@@ -70,19 +70,23 @@ public class DefaultBuilds {
 
 		ActionList tempBuild3 = new ActionList("vP - Command Center first",
 				Race.Terran);
-		String[] actions3 = {"Supply Depot", "Command Center", "Barracks",
-	            "Barracks", "Orbital Command", "Marine", "Bunker", "Orbital Command",
-	            "Barracks", "Barracks", "Refinery", "Refinery",
-	            "Supply Depot", "Tech Lab", "Engineering Bay", "Stimpack", "Bunker",
-	            "Infantry Weapons Level 1", "Factory", "Supply Depot", "Refinery",
-	            "Missile Turret", "Starport", "Supply Depot", "Supply Depot", "Supply Depot",
-	            "Refinery", "Armory", "Engineering Bay", "Medivac", "Medivac", "Command Center", "Reactor", "Reactor", "Reactor",
-	            "Infantry Weapons Level 2", "Infantry Armor Level 1", "Combat Shield", "Barracks", "Barracks", "Starport"};
-	        int[] minutes3 = {1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6,
-	            6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10};
-	        int[] seconds3 = {0, 20, 45, 20, 55, 0, 0, 10, 0, 0, 10, 10, 20, 50, 0, 20,
-	            20, 30, 45, 45, 15, 20, 45, 45, 20, 20, 30, 45, 45, 0, 0, 20, 20, 20,
-	            30, 40, 40, 0, 30, 30, 40};
+		String[] actions3 = { "Supply Depot", "Command Center", "Barracks",
+				"Barracks", "Orbital Command", "Marine", "Bunker",
+				"Orbital Command", "Barracks", "Barracks", "Refinery",
+				"Refinery", "Supply Depot", "Tech Lab", "Engineering Bay",
+				"Stimpack", "Bunker", "Factory", "Infantry Weapons Level 1",
+				"Supply Depot", "Refinery", "Missile Turret", "Starport",
+				"Supply Depot", "Supply Depot", "Supply Depot", "Refinery",
+				"Armory", "Engineering Bay", "Medivac", "Medivac",
+				"Command Center", "Reactor", "Reactor", "Reactor",
+				"Infantry Weapons Level 2", "Infantry Armor Level 1",
+				"Combat Shield", "Barracks", "Barracks", "Starport" };
+		int[] minutes3 = { 1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6,
+				6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10,
+				10, 10, 10 };
+		int[] seconds3 = { 0, 20, 45, 20, 55, 0, 0, 10, 0, 0, 10, 10, 20, 50,
+				0, 20, 20, 30, 45, 45, 15, 20, 45, 45, 20, 20, 30, 45, 45, 0,
+				0, 20, 20, 20, 30, 40, 40, 0, 30, 30, 40 };
 		packBuildAndPutIntoDefaultBuilds(tempBuild3, actions3, minutes3,
 				seconds3);
 

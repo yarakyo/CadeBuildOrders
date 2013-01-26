@@ -51,7 +51,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="Cade Build Orders"
+        android:text="Cade's Build Orders"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <LinearLayout
@@ -63,22 +63,12 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/RestoreBuilds"
+        android:id="@+id/buttonExit"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/button_states"
-        android:text="Restore builds" />
-
-    <Button
-        android:id="@+id/buttonExit"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/RestoreBuilds"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/button_states"
         android:text="Exit" />
 

@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -465,6 +466,10 @@ public class RaceMenu extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_race_menu);
+		
+		// Stop screen for sleeping
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		
 		setUpListenersAndVariables();
 		setUpTextViews();
 		populateBuildsForThisMatchUp();

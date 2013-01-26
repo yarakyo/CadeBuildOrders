@@ -25,7 +25,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="407dp"
             android:orientation="vertical" >
 
             <TextView
@@ -108,6 +108,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp" >
+
+                <TextView
+                    android:id="@+id/TextViewTimeSupply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Supply (Optional):" />
+
+                <EditText
+                    android:id="@+id/editTextTimeSupply"
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:ems="10"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:orientation="horizontal" >
@@ -116,15 +138,15 @@
                     android:id="@+id/buttonBuildAddActionOK"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="OK" 
-                    android:background="@drawable/button_states"/>
+                    android:background="@drawable/button_states"
+                    android:text="OK" />
 
                 <Button
                     android:id="@+id/buttonBuildAddActionCancel"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Cancel" 
-                    android:background="@drawable/button_states"/>
+                    android:background="@drawable/button_states"
+                    android:text="Cancel" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

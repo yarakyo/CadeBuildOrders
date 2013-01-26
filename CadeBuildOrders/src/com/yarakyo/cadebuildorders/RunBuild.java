@@ -54,8 +54,8 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 
 	// Run variables
 	int currentRunTime;
-	boolean runState; // True is running
-	boolean pauseState; // True is paused
+	boolean runState = false; // True is running
+	boolean pauseState = false; // True is paused
 	String runBuildName;
 	List<Action> runActionList;
 	List<RunElement> runElementList;
