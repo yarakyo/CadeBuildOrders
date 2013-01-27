@@ -19,6 +19,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.View;
@@ -132,7 +133,7 @@ public class RaceMenu extends Activity {
 	}
 
 	// Methods
-	private void setUpTextViews() {
+	private void setUpTextViewsAndSetRace() {
 		Intent race = getIntent();
 		String raceName = race.getStringExtra("race");
 		currentRace = raceName;
@@ -401,14 +402,13 @@ public class RaceMenu extends Activity {
 			radioButton.setText(temp.getBuildName());
 			radioGroupBuild.addView(radioButton);
 			radioIndex++;
-		}		
-		
-		//Prevents checked from being lost between activity changes
+		}
+
+		// Prevents checked from being lost between activity changes
 		int checked = radioGroupBuild.getCheckedRadioButtonId();
-		if(checked != -1)
-		{
+		if (checked != -1) {
 			radioGroupBuild.check(-1); // Clear All
-			radioGroupBuild.check(checked); //Redraw it
+			radioGroupBuild.check(checked); // Redraw it
 		}
 	}
 
@@ -444,35 +444,52 @@ public class RaceMenu extends Activity {
 
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent savedIntent) {
+
+		// Handle Add Build
 		if (requestCode == 1) {
 			if (resultCode == RESULT_OK) {
 				handleAddBuild(savedIntent);
 				saveBuildsToFile();
 				refreshRadioGroup();
+			} else {
+				refreshRadioGroup();
 			}
 		}
 
+		// Handle edit build
 		if (requestCode == 2) {
 			if (resultCode == RESULT_OK) {
 				handleEditbuild(savedIntent);
 				saveBuildsToFile();
+				refreshRadioGroup();
+			} else {
 				refreshRadioGroup();
 			}
 		}
 
 	}
 
+	private void setUpBackground() {
+		scrollViewBuilds = (ScrollView) findViewById(R.id.scrollViewBuilds);
+		if(currentRace.equals("Terran")) scrollViewBuilds.setBackgroundResource(R.drawable.logo_terran);
+		if(currentRace.equals("Protoss")) scrollViewBuilds.setBackgroundResource(R.drawable.logo_protoss);
+		if(currentRace.equals("Zerg")) scrollViewBuilds.setBackgroundResource(R.drawable.logo_zerg);
+		Drawable background = scrollViewBuilds.getBackground();
+		background.setAlpha(80);
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_race_menu);
-		
+
 		// Stop screen for sleeping
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		
+
 		setUpListenersAndVariables();
-		setUpTextViews();
+		setUpTextViewsAndSetRace();
 		populateBuildsForThisMatchUp();
+		setUpBackground();
 		refreshRadioGroup();
 	}
 

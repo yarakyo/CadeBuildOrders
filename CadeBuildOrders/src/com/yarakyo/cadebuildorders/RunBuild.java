@@ -59,16 +59,16 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 	String runBuildName;
 	List<Action> runActionList;
 	List<RunElement> runElementList;
-	Context Context;
+	Context context;
 	boolean runExited = false;	//Set to true when user presses backspace or back button
 
 	// Handlers
 	Handler runTimerHandler;
 	Handler runElementHandler;
 
-	// Sound Player
+	// Sound Player and Sound Control
 	SoundPool sp;
-
+	
 	// Text to Speech and Alerts
 	TextToSpeech TTS;
 	boolean TTSenabled = false;
@@ -95,7 +95,7 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 	}
 
 	public Context getContext() {
-		return this.Context;
+		return this.context;
 	}
 	
 	public boolean getRunExited()
@@ -332,13 +332,13 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 
 	private LinearLayout packRunElementIntoContainer(RunElement tempRunElement) {
 		// Container
-		LinearLayout ElementContainerLayout = new LinearLayout(this.Context);
+		LinearLayout ElementContainerLayout = new LinearLayout(this.context);
 		ElementContainerLayout.setOrientation(LinearLayout.HORIZONTAL);
 
 		// Left Layouts
-		LinearLayout ElementLeftLayout = new LinearLayout(Context);
+		LinearLayout ElementLeftLayout = new LinearLayout(this.context);
 		ElementLeftLayout.setOrientation(LinearLayout.VERTICAL);
-		ImageView runElementImage = new ImageView(Context);
+		ImageView runElementImage = new ImageView(this.context);
 		String imagePointer = "icon_";
 		imagePointer += String.valueOf(tempRunElement.getAction().actionID);
 		int id = getResources().getIdentifier(imagePointer, "drawable",
@@ -348,7 +348,7 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 		ElementLeftLayout.addView(runElementImage);
 
 		// Right Layout
-		LinearLayout ElementRightLayout = new LinearLayout(Context);
+		LinearLayout ElementRightLayout = new LinearLayout(this.context);
 		ElementRightLayout.setOrientation(LinearLayout.VERTICAL);
 		ElementRightLayout.setLayoutParams(new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -408,7 +408,7 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 		// Set up Local Variables
 		this.runElementList = new ArrayList<RunElement>();
 		this.runActionList = new ArrayList<Action>();
-		this.Context = this;
+		this.context = this;
 		runActionList = passedBuild.getActionList();
 
 		Iterator<Action> runActionListIterator = this.runActionList.iterator();
@@ -455,6 +455,10 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 	private void setUpTTS() {
 		TTS = new TextToSpeech(this, this);		
 	}
+	
+	private void setUpVolumeControl() {
+		this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+	}
 
 	private void setUpListenersAndVariables() {
 
@@ -463,6 +467,9 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 
 		// Set up Handlers
 		setUpUIHandlers();
+		
+		// Set up Volume control
+		setUpVolumeControl();
 
 		// Set up Display Variables
 		setUpDisplayVaraibles();
@@ -482,6 +489,8 @@ public class RunBuild extends Activity implements TextToSpeech.OnInitListener {
 		// Set up TTS
 		setUpTTS();
 	}
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

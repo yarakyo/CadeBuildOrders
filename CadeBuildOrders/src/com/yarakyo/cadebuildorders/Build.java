@@ -18,7 +18,9 @@ import com.yarakyo.cadebuildorders.ActionList.Race;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Gravity;
 import android.view.Menu;
@@ -315,5 +317,35 @@ public class Build extends Activity {
 		getMenuInflater().inflate(R.menu.activity_build, menu);
 		return true;
 	}
+	
+	@Override
+	public void onBackPressed() {
+		final AlertDialog.Builder alertConfirmBack = new AlertDialog.Builder(
+				this);
+		final AlertDialog alertConfirmBackDialog = alertConfirmBack
+				.create();
+		alertConfirmBack.setTitle("Cancel Changes");
+		alertConfirmBack
+				.setMessage("This build is unsaved, do you want to go back? \n(Any changes will be lost)");
+		alertConfirmBack.setPositiveButton("Yes",
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent closeIntent = new Intent();
+						setResult(RESULT_CANCELED, closeIntent);
+						Build.this.finish();
+					}
+				});
+		alertConfirmBack.setNegativeButton("No",
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				});
+		alertConfirmBack.show();
+	}
+
 
 }

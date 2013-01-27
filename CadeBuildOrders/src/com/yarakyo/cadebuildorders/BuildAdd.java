@@ -9,6 +9,8 @@ import com.yarakyo.cadebuildorders.ActionList.Race;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -117,10 +119,6 @@ public class BuildAdd extends Activity {
 
 		this.currentRace = selectedRace;
 
-		// Set the Race Spinner
-		Spinner raceSpinner = (Spinner) findViewById(R.id.spinnerRace);
-		raceSpinner.setSelection(position);
-
 		// Set the Category Spinner
 		setUpCatagorySpinner();
 
@@ -157,7 +155,6 @@ public class BuildAdd extends Activity {
 
 	private void SetupSpinnersAndDefaultSpinnerValues() {
 		// Set the Race Spinner
-		setUpRaceSpinner();
 
 		// Set the Category Spinner
 		setUpCatagorySpinner();
@@ -175,7 +172,7 @@ public class BuildAdd extends Activity {
 		ArrayAdapter<String> categorySpinnerAdapter = new ArrayAdapter<String>(
 				this, android.R.layout.simple_spinner_item, categoryList);
 		categorySpinnerAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_item);
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		categorySpinner.setAdapter(categorySpinnerAdapter);
 		categorySpinner
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -195,36 +192,6 @@ public class BuildAdd extends Activity {
 					}
 				});
 
-	}
-
-	private void setUpRaceSpinner() {
-		Spinner raceSpinner = (Spinner) findViewById(R.id.spinnerRace);
-		List<String> raceArrayList = new ArrayList<String>();
-		raceArrayList.add(Race.Terran.toString());
-		raceArrayList.add(Race.Protoss.toString());
-		raceArrayList.add(Race.Zerg.toString());
-		ArrayAdapter<String> raceSpinnerAdapter = new ArrayAdapter<String>(
-				this, android.R.layout.simple_spinner_item, raceArrayList);
-		raceSpinnerAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_item);
-		raceSpinner.setAdapter(raceSpinnerAdapter);
-		raceSpinner
-				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-					@Override
-					public void onItemSelected(AdapterView<?> parent,
-							View view, int position, long id) {
-						// TODO Auto-generated method stub
-						Object item = parent.getItemAtPosition(position);
-						RaceSpinnerChange(item, position);
-					}
-
-					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
-						// TODO Auto-generated method stub
-
-					}
-
-				});
 	}
 
 	private void setUpActionSpinner(Race race, Category category) {
@@ -340,6 +307,7 @@ public class BuildAdd extends Activity {
 		this.currentSeconds = 0;
 		this.currentSupply = 0;
 
+		editTextTimeMinutes.setNextFocusDownId(R.id.editTextTimeSeconds);
 		editTextTimeMinutes.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable editTextArgument) {
@@ -377,6 +345,7 @@ public class BuildAdd extends Activity {
 
 		});
 
+		editTextTimeSeconds.setNextFocusDownId(R.id.editTextTimeSupply);
 		editTextTimeSeconds.addTextChangedListener(new TextWatcher() {
 
 			@Override

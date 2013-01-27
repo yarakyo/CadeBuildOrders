@@ -29,18 +29,6 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/TextViewRace"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Race:" />
-
-            <Spinner
-                android:id="@+id/spinnerRace"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
                 android:id="@+id/TextViewCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -108,8 +96,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp" >
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" >
 
                 <TextView
                     android:id="@+id/TextViewTimeSupply"
